@@ -688,6 +688,627 @@ body.theme-light .cc-overview-metric{background:#fff}
 }
 @media(max-width:370px){#cards .cc-hero{grid-template-columns:1fr}#cards .cc-hero .cchr{display:none}.cc-overview-metric b{font-size:.82rem}}
 
+
+/* ===== v2.2 Redesign: Page-Wise Portfolio Transitions, Redesigned Credit Cards & Mobile PWA Polish ===== */
+:root {
+ --card-shadow: 0 12px 34px -10px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.07);
+}
+body.theme-light {
+ --card-shadow: 0 10px 28px -12px rgba(15,23,42,.10), 0 1px 3px rgba(15,23,42,.04);
+}
+.c {
+ box-shadow: inset 0 2px 0 color-mix(in srgb,var(--vc) 48%,transparent), var(--card-shadow);
+}
+.btn.sm {
+ min-height: 32px;
+ padding: .3rem .68rem;
+ font-size: .74rem;
+ border-radius: 10px;
+}
+
+/* Sub-page Transition Architecture (Portfolio & Credit Cards) */
+.subpage-bar {
+ grid-column: 1 / -1;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: .75rem;
+ flex-wrap: wrap;
+ padding: .55rem .7rem;
+ border-radius: 18px;
+ background: color-mix(in srgb, var(--surf) 88%, transparent);
+ border: 1px solid color-mix(in srgb, var(--vc) 28%, var(--b));
+ box-shadow: 0 8px 24px rgba(0,0,0,.10);
+ backdrop-filter: blur(14px);
+ -webkit-backdrop-filter: blur(14px);
+ position: sticky;
+ top: 64px;
+ z-index: 6;
+}
+.subpage-tabs {
+ display: flex;
+ gap: .4rem;
+ flex-wrap: wrap;
+ flex: 1;
+ min-width: 0;
+}
+.subpage-tab {
+ border: 1px solid transparent;
+ background: transparent;
+ color: var(--mut);
+ padding: .48rem .85rem;
+ border-radius: 13px;
+ cursor: pointer;
+ display: grid;
+ grid-template-columns: auto 1fr;
+ column-gap: .5rem;
+ align-items: center;
+ text-align: left;
+ transition: all .25s var(--e);
+ min-width: 0;
+}
+.subpage-tab > span {
+ grid-row: span 2;
+ width: 30px;
+ height: 30px;
+ border-radius: 9px;
+ display: grid;
+ place-items: center;
+ font-size: .95rem;
+ background: color-mix(in srgb, var(--vc) 12%, transparent);
+ color: var(--vc);
+ transition: transform .25s var(--e), background .25s;
+}
+.subpage-tab b {
+ font: 700 .78rem/1.2 Sora, inherit;
+ color: var(--ink);
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;
+}
+.subpage-tab small {
+ font-size: .65rem;
+ color: var(--mut);
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;
+}
+.subpage-tab:hover:not(.on) {
+ background: color-mix(in srgb, var(--vc) 9%, transparent);
+ border-color: color-mix(in srgb, var(--vc) 25%, transparent);
+}
+.subpage-tab.on {
+ background: linear-gradient(135deg, color-mix(in srgb, var(--vc) 22%, var(--surf)), color-mix(in srgb, var(--a2) 14%, var(--surf)));
+ border-color: color-mix(in srgb, var(--vc) 55%, var(--b));
+ box-shadow: 0 6px 18px color-mix(in srgb, var(--vc) 18%, transparent);
+}
+.subpage-tab.on > span {
+ background: var(--vc);
+ color: #fff;
+ transform: scale(1.04);
+}
+.subpage-pager {
+ display: flex;
+ align-items: center;
+ gap: .45rem;
+ flex: none;
+}
+.subpage-pager span {
+ font: 700 .72rem Sora, inherit;
+ min-width: 68px;
+ text-align: center;
+}
+
+/* Portfolio Page-Wise Visibility & Directional Slide Animations */
+@keyframes pageSlideRight {
+ from { opacity: 0; transform: translateX(26px) scale(.99); }
+ to { opacity: 1; transform: none; }
+}
+@keyframes pageSlideLeft {
+ from { opacity: 0; transform: translateX(-26px) scale(.99); }
+ to { opacity: 1; transform: none; }
+}
+#market[data-pf-page="holdings"] .pf-page-card:not([data-pf-group="holdings"]),
+#market[data-pf-page="analytics"] .pf-page-card:not([data-pf-group="analytics"]),
+#market[data-pf-page="simulator"] .pf-page-card:not([data-pf-group="simulator"]),
+#market[data-pf-page="inspector"] .pf-page-card:not([data-pf-group="inspector"]) {
+ display: none !important;
+}
+#market[data-pf-page="inspector"] #tape {
+ display: none !important;
+}
+#market.pf-anim-next .pf-page-card,
+#cards.cc-anim-next .cc-page-group {
+ animation: pageSlideRight .38s var(--e) both;
+}
+#market.pf-anim-prev .pf-page-card,
+#cards.cc-anim-prev .cc-page-group {
+ animation: pageSlideLeft .38s var(--e) both;
+}
+
+/* Credit Card Page-Wise Visibility */
+.cc-page-group {
+ grid-column: 1 / -1;
+ display: grid;
+ gap: 1rem;
+}
+#cards[data-cc-page="wallet"] .cc-page-group:not([data-cc-group="wallet"]),
+#cards[data-cc-page="ledger"] .cc-page-group:not([data-cc-group="ledger"]),
+#cards[data-cc-page="analytics"] .cc-page-group:not([data-cc-group="analytics"]) {
+ display: none !important;
+}
+
+/* Credit Card Enhancements: Quick Selector, Split Settlement Banner & Ledger Filter */
+.cc-quick-strip {
+ display: flex;
+ gap: .45rem;
+ overflow-x: auto;
+ padding: .65rem .1rem .1rem;
+ scrollbar-width: none;
+}
+.cc-quick-strip::-webkit-scrollbar { display: none; }
+.cc-qpill {
+ flex: none;
+ display: inline-flex;
+ align-items: center;
+ gap: .45rem;
+ padding: .38rem .75rem;
+ border-radius: 99px;
+ border: 1px solid var(--b);
+ background: var(--p2);
+ color: var(--ink);
+ font: 700 .73rem inherit;
+ cursor: pointer;
+ transition: all .2s var(--e);
+}
+.cc-qpill i {
+ width: 8px;
+ height: 8px;
+ border-radius: 50%;
+ background: var(--dot, var(--a1));
+}
+.cc-qpill small {
+ color: var(--mut);
+ font-weight: 600;
+}
+.cc-qpill.on {
+ border-color: var(--a1);
+ background: color-mix(in srgb, var(--a1) 16%, var(--surf));
+ box-shadow: 0 4px 12px color-mix(in srgb, var(--a1) 20%, transparent);
+}
+.cc-split-summary {
+ display: grid;
+ grid-template-columns: repeat(4, minmax(0, 1fr));
+ gap: .75rem;
+ background: linear-gradient(135deg, color-mix(in srgb, var(--a1) 10%, var(--surf)), color-mix(in srgb, var(--a2) 8%, var(--surf)));
+}
+.cc-split-box {
+ padding: .75rem .9rem;
+ border-radius: 14px;
+ border: 1px solid var(--b);
+ background: var(--p2);
+ display: grid;
+ gap: .2rem;
+}
+.cc-split-box small {
+ font-size: .66rem;
+ text-transform: uppercase;
+ letter-spacing: .06em;
+ color: var(--mut);
+ font-weight: 800;
+}
+.cc-split-box b {
+ font: 800 1.1rem Sora;
+}
+.cc-split-box span {
+ font-size: .72rem;
+ color: var(--mut);
+}
+.cc-ledger-head {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ gap: .8rem;
+ flex-wrap: wrap;
+ margin-bottom: .85rem;
+}
+.cc-cycle-bar {
+ margin-top: .75rem;
+ padding: .75rem .85rem;
+ border-radius: 13px;
+ border: 1px solid var(--b);
+ background: color-mix(in srgb, var(--a2) 7%, var(--p2));
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ gap: .6rem;
+ flex-wrap: wrap;
+ font-size: .76rem;
+}
+
+/* Tapetide Collapsible Settings */
+.tapetide-box summary {
+ cursor: pointer;
+ font: 700 .78rem Sora, inherit;
+ color: var(--a1);
+ padding: .5rem .75rem;
+ border-radius: 11px;
+ background: var(--p2);
+ border: 1px solid var(--b);
+ list-style: none;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+}
+.tapetide-box summary::-webkit-details-marker { display: none; }
+.tapetide-box summary::after { content: "▾"; color: var(--mut); transition: transform .2s; }
+.tapetide-box[open] summary::after { transform: rotate(180deg); }
+
+/* Portfolio Page 2: Executive Performance & Allocation Matrix */
+.pf-exec-grid {
+ display: grid;
+ grid-template-columns: repeat(4, minmax(0, 1fr));
+ gap: .75rem;
+}
+.pf-exec-tile {
+ padding: .85rem .95rem;
+ border-radius: 15px;
+ border: 1px solid var(--b);
+ background: var(--p2);
+ display: grid;
+ gap: .22rem;
+ cursor: pointer;
+ transition: transform .2s var(--e), border-color .2s;
+}
+.pf-exec-tile:hover {
+ transform: translateY(-2px);
+ border-color: var(--a1);
+}
+.pf-exec-tile small {
+ font-size: .66rem;
+ text-transform: uppercase;
+ letter-spacing: .06em;
+ color: var(--mut);
+ font-weight: 800;
+}
+.pf-exec-tile b {
+ font: 800 1.02rem Sora;
+ overflow-wrap: anywhere;
+}
+.pf-exec-tile span {
+ font-size: .74rem;
+}
+.pf-alloc-list {
+ display: grid;
+ gap: .55rem;
+ margin-top: .5rem;
+}
+.pf-alloc-row {
+ display: grid;
+ grid-template-columns: minmax(120px, 1.4fr) 1fr auto;
+ gap: .75rem;
+ align-items: center;
+ padding: .55rem .7rem;
+ border-radius: 12px;
+ background: var(--p2);
+ border: 1px solid var(--b);
+ cursor: pointer;
+ transition: border-color .2s;
+}
+.pf-alloc-row:hover { border-color: var(--a1); }
+.pf-alloc-bar {
+ height: 8px;
+ border-radius: 99px;
+ background: var(--b);
+ overflow: hidden;
+}
+.pf-alloc-bar i {
+ display: block;
+ height: 100%;
+ border-radius: 99px;
+}
+
+/* Portfolio Page 4: Full-Page Holding Deep-Dive Inspector */
+.pf-inspector-card {
+ padding: 1.25rem 1.35rem;
+}
+.pfi-top {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: .75rem;
+ flex-wrap: wrap;
+ padding-bottom: .9rem;
+ border-bottom: 1px solid var(--b);
+}
+.pfi-nav {
+ display: flex;
+ align-items: center;
+ gap: .45rem;
+ flex-wrap: wrap;
+}
+.pfi-hero {
+ display: flex;
+ justify-content: space-between;
+ align-items: flex-start;
+ gap: 1rem;
+ flex-wrap: wrap;
+ margin: 1rem 0;
+ padding: 1.1rem 1.2rem;
+ border-radius: 18px;
+ background: linear-gradient(135deg, color-mix(in srgb, var(--a1) 14%, var(--p2)), color-mix(in srgb, var(--a2) 10%, var(--p2)));
+ border: 1px solid color-mix(in srgb, var(--a1) 32%, var(--b));
+}
+.pfi-title h2 {
+ font: 800 clamp(1.2rem, 2.5vw, 1.65rem) Sora !important;
+ margin: .25rem 0 !important;
+ color: var(--ink) !important;
+}
+.pfi-title h2::before { display: none !important; }
+.pfi-price-box {
+ text-align: right;
+ display: grid;
+ gap: .2rem;
+}
+.pfi-price-box strong {
+ font: 800 clamp(1.4rem, 3vw, 2rem) Sora;
+}
+.pfi-kpis {
+ display: grid;
+ grid-template-columns: repeat(6, minmax(0, 1fr));
+ gap: .65rem;
+ margin-bottom: 1rem;
+}
+.pfi-kpi {
+ padding: .75rem .85rem;
+ border-radius: 14px;
+ border: 1px solid var(--b);
+ background: var(--p2);
+ display: grid;
+ gap: .2rem;
+}
+.pfi-kpi small {
+ font-size: .65rem;
+ color: var(--mut);
+ text-transform: uppercase;
+ letter-spacing: .05em;
+ font-weight: 800;
+}
+.pfi-kpi b {
+ font: 750 .98rem Sora;
+ overflow-wrap: anywhere;
+}
+.pfi-grid {
+ display: grid;
+ grid-template-columns: 7fr 5fr;
+ gap: 1rem;
+ align-items: start;
+}
+.pfi-panel {
+ padding: 1rem 1.1rem;
+ border-radius: 16px;
+ border: 1px solid var(--b);
+ background: var(--p2);
+}
+.pfi-panel h3 {
+ font: 700 .86rem Sora;
+ margin-bottom: .7rem;
+ color: var(--ink);
+}
+.pfi-chart-wrap {
+ height: 310px;
+ position: relative;
+ margin-top: .6rem;
+}
+.pfi-Peer-list {
+ display: grid;
+ gap: .45rem;
+ max-height: 290px;
+ overflow-y: auto;
+}
+.pfi-peer-item {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ gap: .5rem;
+ padding: .5rem .65rem;
+ border-radius: 10px;
+ border: 1px solid var(--b);
+ background: var(--surf);
+ cursor: pointer;
+ font-size: .78rem;
+}
+.pfi-peer-item.on {
+ border-color: var(--a1);
+ background: color-mix(in srgb, var(--a1) 13%, var(--surf));
+}
+
+/* Mobile Quick Tools Bottom Sheet */
+.mtools-sheet {
+ position: fixed;
+ inset: 0;
+ z-index: 9500;
+ background: rgba(0,0,0,.6);
+ backdrop-filter: blur(8px);
+ -webkit-backdrop-filter: blur(8px);
+ display: none;
+ align-items: flex-end;
+ justify-content: center;
+}
+.mtools-sheet.open { display: flex; }
+.mtools-box {
+ width: min(520px, 100vw);
+ background: var(--surf, #0d1524);
+ border-top: 1px solid var(--b);
+ border-radius: 24px 24px 0 0;
+ padding: 1rem 1.15rem calc(1.4rem + env(safe-area-inset-bottom));
+ box-shadow: 0 -20px 50px rgba(0,0,0,.4);
+ animation: sheetUp .28s var(--e);
+}
+@keyframes sheetUp {
+ from { transform: translateY(100%); }
+ to { transform: none; }
+}
+.mtools-grip {
+ width: 42px;
+ height: 4px;
+ border-radius: 99px;
+ background: var(--b);
+ margin: 0 auto .8rem;
+}
+.mtools-grid {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: .6rem;
+ margin: .8rem 0;
+}
+
+@media (min-width: 701px) {
+ #mobileToolsBtn { display: none; }
+}
+@media (max-width: 960px) {
+ .pfi-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+ .pfi-grid { grid-template-columns: 1fr; }
+ .pf-exec-grid, .cc-split-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+ .subpage-bar {
+  top: 58px;
+  margin: 0 -.75rem .55rem;
+  border-radius: 0;
+  border-left: 0;
+  border-right: 0;
+  padding: .45rem .65rem;
+ }
+ .subpage-tabs {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+ }
+ .subpage-tabs::-webkit-scrollbar { display: none; }
+ .subpage-tab {
+  flex: 0 0 auto;
+  padding: .4rem .68rem;
+  grid-template-columns: auto auto;
+ }
+ .subpage-tab small { display: none; }
+ .subpage-tab > span {
+  grid-row: 1;
+  width: 24px;
+  height: 24px;
+  font-size: .82rem;
+ }
+ .subpage-pager { display: none; }
+ #market .phead {
+  position: static !important;
+  margin: 0 0 .65rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+ }
+ .pfi-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ .pfi-price-box { text-align: left; }
+ .pf-alloc-row { grid-template-columns: 1fr auto; }
+ .pf-alloc-bar { grid-column: 1 / -1; }
+}
+
+
+/* ===== v2.4 Calendar Checkbox Tasks, Overview Pie Grid & Redesigned Pie Charts ===== */
+.ov-flow-grid {
+ display: grid;
+ grid-template-columns: minmax(195px, 44%) 1fr;
+ gap: 1.1rem;
+ align-items: center;
+}
+@media (max-width: 760px) {
+ .ov-flow-grid {
+  grid-template-columns: 1fr;
+ }
+}
+.cal-chk-row {
+ grid-template-columns: auto 1fr auto !important;
+ gap: .75rem !important;
+ transition: background .2s, opacity .2s, border-color .2s;
+}
+.cal-chk-row.is-done {
+ opacity: .78;
+ background: color-mix(in srgb, var(--up, #10b981) 8%, var(--p));
+ border-left-color: var(--up, #10b981) !important;
+}
+.cal-chk-row.is-done .cal-task-info b {
+ text-decoration: line-through;
+ color: var(--mut);
+}
+.cal-chk-wrap {
+ position: relative;
+ display: inline-grid;
+ place-items: center;
+ width: 24px;
+ height: 24px;
+ cursor: pointer;
+ flex: none;
+ user-select: none;
+}
+.cal-chk-wrap input {
+ position: absolute;
+ opacity: 0;
+ width: 0;
+ height: 0;
+}
+.cal-cb-ui {
+ width: 22px;
+ height: 22px;
+ border-radius: 7px;
+ border: 2px solid color-mix(in srgb, var(--ink) 35%, var(--b));
+ background: var(--surf);
+ display: grid;
+ place-items: center;
+ transition: all .2s var(--e);
+ box-shadow: inset 0 1px 2px rgba(0,0,0,.15);
+}
+.cal-chk-wrap:hover .cal-cb-ui {
+ border-color: var(--a1);
+ transform: scale(1.06);
+}
+.cal-chk-wrap input:focus-visible + .cal-cb-ui {
+ outline: 2px solid var(--a1);
+ outline-offset: 2px;
+}
+.cal-chk-wrap input:checked + .cal-cb-ui {
+ background: linear-gradient(135deg, var(--up, #10b981), var(--a1));
+ border-color: transparent;
+ box-shadow: 0 4px 12px color-mix(in srgb, var(--up, #10b981) 38%, transparent);
+}
+.cal-chk-wrap input:checked + .cal-cb-ui::after {
+ content: "✓";
+ color: #04121a;
+ font: 900 .82rem/1 Sora, sans-serif;
+}
+.cal-task-info {
+ cursor: pointer;
+ min-width: 0;
+}
+.cal-markall {
+ flex: none;
+ white-space: nowrap;
+}
+#calUp li[data-cal-jump] {
+ cursor: pointer;
+ transition: transform .2s var(--e), border-color .2s;
+}
+#calUp li[data-cal-jump]:hover {
+ transform: translateY(-2px);
+ border-color: var(--a1);
+}
+/* Redesigned ring gauges */
+.ring circle.t, .cc-ring circle.rb {
+ stroke-dasharray: 3 3;
+}
+.ring circle.v, .cc-ring circle.rf {
+ filter: drop-shadow(0 0 6px currentColor);
+}
+
 </style></head>
 <body class="empty">
 <nav><div class="logo">₹</div>
@@ -698,7 +1319,7 @@ body.theme-light .cc-overview-metric{background:#fff}
   <div class="seg" id="seg"><button class="on">All</button><button>Active</button><button>Closed</button><button>Not Started</button></div>
   <span class="chip" id="file">No workbook</span><button class="btn p" id="open">Open workbook</button><button class="btn" id="refresh">Refresh</button>
   <label class="chip"><input type="checkbox" id="auto"> Auto</label>
-  <button class="btn" id="visibility">🙈 Hide values</button><button class="btn p" id="installBtn" hidden>📲 Install app</button>
+  <button class="btn" id="visibility">🙈 Hide values</button><button class="btn" id="mobileToolsBtn" type="button" aria-label="App tools &amp; settings" title="App tools &amp; settings">⚙ Tools</button><button class="btn p" id="installBtn" hidden>📲 Install app</button>
   <select class="btn" id="theme" aria-label="Theme"></select></div>
  <div id="msg"></div>
  <div id="empty"><div><h1 style="font-size:1.4rem;margin-bottom:.5rem">Drop finance_data.xlsx here</h1><p class="mut">Drag the workbook onto this page or press <b>Open workbook</b>. Password-protected workbooks are supported. Started with <i>Start Dashboard.bat</i>, it loads the file next to it automatically.</p></div></div>
@@ -714,7 +1335,7 @@ body.theme-light .cc-overview-metric{background:#fff}
   <div class="c s3" data-detail="maturity" role="button" tabindex="0" style="--i:4"><h2>Projected maturity</h2><div class="med" data-n="mat"></div><div class="mut" id="epf"></div></div>
   <div class="c s3" data-detail="bank" role="button" tabindex="0" style="--i:5"><h2>Invested via bank</h2><div class="med" data-n="bank"></div><div class="mut" id="bk"></div></div>
   <div class="c s3" data-detail="surplus" role="button" tabindex="0" style="--i:6"><h2>Monthly surplus</h2><div class="med" data-n="sur"></div><div class="mut">take-home − allocated</div></div>
-  <div class="c s7" style="--i:7"><h2>Where each month goes</h2><div class="split" style="height:16px" id="flow"></div><div class="leg" id="flowl"></div></div>
+  <div class="c s7" style="--i:7"><h2>Where each month goes</h2><div class="ov-flow-grid"><div class="cv" style="height:220px"><canvas id="c0"></canvas></div><div><div class="split" style="height:12px;margin-top:0" id="flow"></div><div class="leg" id="flowl"></div></div></div></div>
   <div class="c s5" style="--i:8"><h2>Insights</h2><ul id="ins"></ul></div>
  </section>
 
@@ -740,55 +1361,121 @@ body.theme-light .cc-overview-metric{background:#fff}
   <div class="c s4" data-detail="maxgain" role="button" tabindex="0" style="--i:4"><h2>Projected corpus</h2><div class="leg" id="cmp"></div></div>
  </section>
 
- <section class="view g" id="cards">
+ <section class="view g" id="cards" data-cc-page="wallet">
   <div class="c s12 cc-hero" id="ccHero" style="--i:0"></div>
   <div class="cc-overview-strip" id="ccOverviewStrip"></div>
   <div id="ccBody" class="cc-body" hidden>
-   <div class="c cc-stage" id="ccStage" style="--i:1"><div class="cc-head"><div><h2>Your cards</h2><div class="mut">Swipe or use ← → · click the front card to flip it</div></div><div class="cc-dots" id="ccDots"></div></div><div class="cc-rail" id="ccRail"></div></div>
-   <div class="ccgrid">
-    <div class="c ccdetail" id="ccDetail" style="--i:2"></div>
-    <div class="c cctime" style="--i:3"><h2>Upcoming dues</h2><div id="ccTimeline"></div></div>
-    <div class="c" style="--i:4"><h2>Dues by card</h2><div class="cv"><canvas id="ccDonut"></canvas></div></div>
-    <div class="c" style="--i:5"><h2>Utilization by card</h2><div class="cv"><canvas id="ccUtil"></canvas></div></div>
+   <div class="subpage-bar s12" id="ccPageNav" role="tablist" aria-label="Credit card workspace pages">
+    <div class="subpage-tabs">
+     <button type="button" class="subpage-tab on" data-cc-tab="wallet" role="tab" aria-selected="true"><span>💳</span><b>Card Wallet &amp; Inspector</b><small>3D Deck &amp; Cycle Health</small></button>
+     <button type="button" class="subpage-tab" data-cc-tab="ledger" role="tab" aria-selected="false"><span>📋</span><b>Payment &amp; Split Ledger</b><small>My Share vs Other's Share</small></button>
+     <button type="button" class="subpage-tab" data-cc-tab="analytics" role="tab" aria-selected="false"><span>📊</span><b>Utilization &amp; EMI Planner</b><small>Charts, EMIs &amp; Payoff</small></button>
+     <button type="button" class="subpage-tab" data-cc-tab="all" role="tab" aria-selected="false"><span>⊞</span><b>Full View</b><small>All Sections</small></button>
+    </div>
+    <div class="subpage-pager">
+     <button type="button" class="btn sm" id="ccPrevPage" title="Previous card page">← Prev</button>
+     <span class="mut" id="ccPageIndicator">Page 1 / 3</span>
+     <button type="button" class="btn sm" id="ccNextPage" title="Next card page">Next →</button>
+    </div>
    </div>
-   <div class="c cc-ledger" style="--i:6"><h2>All cards · payment ledger</h2><div class="cc-mobile-rows" id="ccMobileRows"></div><div class="tw"><table id="ccTable"><thead><tr><th>Card</th><th class="r">Outstanding</th><th class="r">Limit</th><th class="r">Used</th><th class="r">To pay by me</th><th class="r">Paid</th><th class="r">Pending</th><th>Statement</th><th>Status</th></tr></thead><tbody id="ccRows"></tbody></table></div></div>
-   <div class="c" id="ccEmi" style="--i:7"></div>
-   <div class="c" id="ccTips" style="--i:8"></div>
+
+   <div class="cc-page-group" data-cc-group="wallet">
+    <div class="c cc-stage" id="ccStage" style="--i:1">
+     <div class="cc-head">
+      <div><h2>Interactive Card Deck</h2><div class="mut">Select any chip or swipe the deck · click active card to flip back for limit &amp; cycle details</div></div>
+      <div class="cc-dots" id="ccDots"></div>
+     </div>
+     <div class="cc-quick-strip" id="ccQuickStrip" aria-label="Quick card selector"></div>
+     <div class="cc-rail" id="ccRail"></div>
+    </div>
+    <div class="ccgrid cc-wallet-grid">
+     <div class="c ccdetail" id="ccDetail" style="--i:2"></div>
+     <div class="c cctime" style="--i:3"><h2>Upcoming Dues &amp; Settlement Priority</h2><div id="ccTimeline"></div></div>
+    </div>
+   </div>
+
+   <div class="cc-page-group" data-cc-group="ledger">
+    <div class="c cc-split-summary" id="ccSplitBanner" style="--i:2"></div>
+    <div class="c cc-ledger" style="--i:3">
+     <div class="cc-ledger-head">
+      <div><h2>All Cards · Payment &amp; Split Ledger</h2><div class="mut">Tap any card to inspect its statement cycle · filter by settlement status</div></div>
+      <div class="seg" id="ccLedgerFilter" role="group" aria-label="Filter cards">
+       <button type="button" class="on" data-ccf="all">All Cards</button>
+       <button type="button" data-ccf="due">Has Outstanding</button>
+       <button type="button" data-ccf="pending">Pending Settlement</button>
+       <button type="button" data-ccf="highutil">High Util (&gt;30%)</button>
+      </div>
+     </div>
+     <div class="cc-mobile-rows" id="ccMobileRows"></div>
+     <div class="tw"><table id="ccTable"><thead><tr><th>Card</th><th class="r">Outstanding</th><th class="r">Limit</th><th class="r">Used</th><th class="r">To pay by me</th><th class="r">Paid</th><th class="r">Pending</th><th>Statement</th><th>Status</th></tr></thead><tbody id="ccRows"></tbody></table></div>
+    </div>
+   </div>
+
+   <div class="cc-page-group" data-cc-group="analytics">
+    <div class="ccgrid cc-analytics-grid">
+     <div class="c" style="--i:2"><h2>Dues Share by Card</h2><div class="cv"><canvas id="ccDonut"></canvas></div></div>
+     <div class="c" style="--i:3"><h2>Credit Utilization vs 30% Bureau Threshold</h2><div class="cv"><canvas id="ccUtil"></canvas></div></div>
+    </div>
+    <div class="c" id="ccEmi" style="--i:4"></div>
+    <div class="c" id="ccTips" style="--i:5"></div>
+   </div>
   </div>
  </section>
- <section class="view g" id="market">
-  <div class="c s12" style="--i:0">
-   <div class="phead"><div><h2 style="margin:0">Stocks &amp; Mutual Funds</h2><div class="mut">From Stock &amp; MF Tracking · select a row for details · give any stock a display name in the last column</div></div><span class="sp"></span>
-    <div class="seg" id="pfSeg"><button class="on" data-f="all">All</button><button data-f="Mutual Fund">Mutual funds</button><button data-f="Stock">Stocks</button></div><button class="btn p" id="priceRefresh">Refresh live prices</button></div>
+ <section class="view g" id="market" data-pf-page="holdings">
+  <div class="subpage-bar s12" id="pfPageNav" role="tablist" aria-label="Portfolio analysis pages">
+   <div class="subpage-tabs">
+    <button type="button" class="subpage-tab on" data-pf-tab="holdings" role="tab" aria-selected="true"><span>📈</span><b>1 · Holdings Explorer</b><small>Live Quotes &amp; Positions</small></button>
+    <button type="button" class="subpage-tab" data-pf-tab="analytics" role="tab" aria-selected="false"><span>📊</span><b>2 · Performance &amp; Allocation</b><small>Returns, Winners &amp; Mix</small></button>
+    <button type="button" class="subpage-tab" data-pf-tab="simulator" role="tab" aria-selected="false"><span>🚀</span><b>3 · Wealth Simulator &amp; SIPs</b><small>Corpus &amp; Bank Flows</small></button>
+    <button type="button" class="subpage-tab" data-pf-tab="inspector" role="tab" aria-selected="false"><span>🔍</span><b>4 · Holding Deep-Dive</b><small id="pfInspectorTabSub">Full-Page Analysis</small></button>
+   </div>
+   <div class="subpage-pager">
+    <button type="button" class="btn sm" id="pfPrevPage" title="Previous portfolio page">← Prev</button>
+    <span class="mut" id="pfPageIndicator">Page 1 / 4</span>
+    <button type="button" class="btn sm" id="pfNextPage" title="Next portfolio page">Next →</button>
+   </div>
+  </div>
+
+  <div class="c s12 pf-page-card" data-pf-group="holdings" style="--i:0">
+   <div class="phead"><div><h2 style="margin:0">Stocks &amp; Mutual Funds · Holdings Explorer</h2><div class="mut">Select any holding to transition into the full-page Deep-Dive Inspector · swipe or use tabs above to switch analysis pages</div></div><span class="sp"></span>
+    <div class="seg" id="pfSeg"><button class="on" data-f="all">All</button><button data-f="Mutual Fund">Mutual funds</button><button data-f="Stock">Stocks</button></div><button class="btn p" id="priceRefresh">↻ Refresh live prices</button></div>
    <div id="portfolioMobileSummary" class="portfolio-mobile-summary"></div>
    <div class="pkpi pk2"><div class="c k-inv"><h2>Invested</h2><div class="med" id="portInvested">—</div><div class="mut" id="portInvSub"></div></div><div class="c k-val"><h2>Current value</h2><div class="med" id="portValue">—</div><div class="mut" id="portValSub"></div></div><div class="c k-pl"><h2>P/L</h2><div class="med" id="portPL">—</div><div class="mut" id="portPLSub"></div></div><div class="c k-ret"><h2>Return</h2><div class="med" id="portPct">—</div><div class="mut" id="portRetSub"></div></div></div>
-   <div class="psplit" id="portSplit"></div>
-   <div class="psort"><label class="pf-search"><span>⌕</span><input id="pfSearch" type="search" placeholder="Search stocks or funds" autocomplete="off" aria-label="Search stocks and mutual funds"></label><span class="mut pf-sort-label">Sort</span><div class="seg" id="pfSort" role="group" aria-label="Sort holdings"><button type="button" class="on" data-s="val">Value</button><button type="button" data-s="pct">Return %</button><button type="button" data-s="pl">P/L ₹</button><button type="button" data-s="name">Name</button></div></div>
+   <div class="psort"><label class="pf-search"><span>⌕</span><input id="pfSearch" type="search" placeholder="Search stocks, mutual funds, BSE code or symbol…" autocomplete="off" aria-label="Search stocks and mutual funds"></label><span class="mut pf-sort-label">Sort</span><div class="seg" id="pfSort" role="group" aria-label="Sort holdings"><button type="button" class="on" data-s="val">Value</button><button type="button" data-s="pct">Return %</button><button type="button" data-s="pl">P/L ₹</button><button type="button" data-s="name">Name</button></div></div>
    <div id="portfolioMobileCards" class="portfolio-mobile-cards"></div>
    <div class="tw portfolio-desktop-table"><table><thead><tr><th>Instrument</th><th class="r">Units</th><th class="r">Avg cost</th><th class="r">Current price / NAV</th><th class="r">Invested</th><th class="r">Current value</th><th class="r">P/L</th><th class="r" id="corpH">Corpus</th><th>Trend · click to expand</th><th>Yahoo ID / scheme code · name</th></tr></thead><tbody id="portfolioRows"></tbody><tfoot id="portfolioFoot"></tfoot></table></div>
    <div class="mut" id="priceMsg" style="margin-top:.8rem">Live prices not refreshed yet. Showing the values saved in the workbook.</div>
-   <div id="tapetideSettings" style="margin-top:.75rem;padding:.8rem;border:1px solid var(--line);border-radius:12px;background:var(--panel,rgba(127,127,127,.06))">
-    <div style="display:flex;gap:.55rem;align-items:center;flex-wrap:wrap">
-     <strong style="font-size:.85rem">Indian stock quotes · Tapetide</strong><span class="mut" style="font-size:.75rem">Primary stock source · 1 batch request per refresh</span>
+   <details class="tapetide-box" style="margin-top:.75rem">
+    <summary>⚙ Configure Live Quote Feed (Tapetide API &amp; Symbol Mapping)</summary>
+    <div id="tapetideSettings" style="margin-top:.65rem;padding:.8rem;border:1px solid var(--b);border-radius:12px;background:var(--p2)">
+     <div style="display:flex;gap:.55rem;align-items:center;flex-wrap:wrap">
+      <strong style="font-size:.85rem">Indian stock quotes · Tapetide</strong><span class="mut" style="font-size:.75rem">Primary stock source · 1 batch request per refresh</span>
+     </div>
+     <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.55rem">
+      <input id="tapetideToken" type="password" autocomplete="off" placeholder="Paste Tapetide API token" style="flex:1;min-width:220px;max-width:440px;padding:.65rem .75rem;border-radius:9px;border:1px solid var(--b);background:var(--surf);color:var(--ink)">
+      <button class="btn" id="tapetideSave" type="button">Save token</button><button class="btn" id="tapetideClear" type="button">Clear</button>
+     </div>
+     <div class="mut" id="tapetideStatus" style="font-size:.74rem;margin-top:.45rem">Get a free token at tapetide.com. Token is saved only in this browser, not in Excel.</div>
+     <div class="mut" style="font-size:.72rem;margin-top:.3rem">Optional Excel mapping: enter the provider's exact NSE/BSE symbol in column S (header: Tapetide Symbol), rows 6–16. If blank, the app tries to infer it from the Yahoo ID/BSE code.</div>
     </div>
-    <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.55rem">
-     <input id="tapetideToken" type="password" autocomplete="off" placeholder="Paste Tapetide API token" style="flex:1;min-width:220px;max-width:440px;padding:.65rem .75rem;border-radius:9px;border:1px solid var(--line);background:var(--bg2,var(--panel));color:var(--ink)">
-     <button class="btn" id="tapetideSave" type="button">Save token</button><button class="btn" id="tapetideClear" type="button">Clear</button>
-    </div>
-    <div class="mut" id="tapetideStatus" style="font-size:.74rem;margin-top:.45rem">Get a free token at tapetide.com. Token is saved only in this browser, not in Excel.</div>
-    <div class="mut" style="font-size:.72rem;margin-top:.3rem">Optional Excel mapping: enter the provider's exact NSE/BSE symbol in column S (header: Tapetide Symbol), rows 6–16. If blank, the app tries to infer it from the Yahoo ID/BSE code.</div>
-   </div>
+   </details>
   </div>
-  <div class="c s5" data-detail="assetClass" data-value="all" role="button" tabindex="0" style="--i:1"><h2>Invested vs current value</h2><div class="cv"><canvas id="c7"></canvas></div></div>
-  <div class="c s7" style="--i:2"><h2>Return by holding</h2><div class="cv"><canvas id="c8"></canvas></div></div>
-  <div class="c s5" style="--i:3"><h2>Analysis</h2><ul id="invAn"></ul></div>
-  <div class="c s7" style="--i:4"><h2>Projected corpus · mutual funds + stocks</h2>
+
+  <div class="c s12 pf-page-card" data-pf-group="analytics" id="pfExecSummary" style="--i:0"></div>
+  <div class="c s5 pf-page-card" data-pf-group="analytics" data-detail="assetClass" data-value="all" role="button" tabindex="0" style="--i:1"><h2>Invested vs Current Value</h2><div class="cv"><canvas id="c7"></canvas></div></div>
+  <div class="c s7 pf-page-card" data-pf-group="analytics" style="--i:2"><h2>Return by Holding (%)</h2><div class="cv"><canvas id="c8"></canvas></div></div>
+  <div class="c s7 pf-page-card" data-pf-group="analytics" id="pfAllocMatrix" style="--i:3"></div>
+  <div class="c s5 pf-page-card" data-pf-group="analytics" style="--i:4"><h2>Portfolio Insights &amp; Concentration Checks</h2><ul id="invAn"></ul></div>
+
+  <div class="c s7 pf-page-card" data-pf-group="simulator" style="--i:1"><h2>Projected Corpus · Mutual Funds + Stocks</h2>
    <div class="phead" style="margin-bottom:.6rem"><label class="chip">Return <input class="q" id="pjRate" type="number" step="0.5" min="0" max="30" style="min-width:0;width:4.5rem"> % / yr</label><label class="chip">Years <input class="q" id="pjYears" type="number" min="1" max="60" style="min-width:0;width:4.5rem"></label><label class="chip"><input type="checkbox" id="pjSip"> include monthly SIP from Master file</label></div>
    <div class="tw"><table><thead><tr><th></th><th class="r">Current value</th><th class="r">Monthly SIP</th><th class="r">Value only</th><th class="r">With SIP</th></tr></thead><tbody id="pjRows"></tbody></table></div>
    <div class="cv" style="margin-top:.6rem"><canvas id="c10"></canvas></div></div>
-  <div class="c s7" style="--i:5"><h2>Accumulation · cumulative invested via bank</h2><div class="cv"><canvas id="c9"></canvas></div><div class="mut" id="accn" style="margin-top:.5rem"></div></div>
-  <div class="c s5" data-detail="bank" role="button" tabindex="0" style="--i:6"><h2>Investing mix</h2><div class="cv"><canvas id="c5"></canvas></div></div>
-  <div class="c s12" data-detail="bank" role="button" tabindex="0" style="--i:7"><div class="phead" style="align-items:center;gap:.7rem;flex-wrap:wrap"><h2 style="margin:0">Investment by month (₹)</h2><span class="sp"></span><div class="seg" id="invMonthTabs" role="group" aria-label="Investment by month view"><button type="button" class="on" data-inv-month="actual">Actual</button><button type="button" data-inv-month="compare">Actual vs plan</button></div></div><div class="cv"><canvas id="c4"></canvas></div><div class="mut" id="invMonthNote" style="margin-top:.45rem">Actual investment payments identified in the bank statement.</div></div>
+  <div class="c s5 pf-page-card" data-pf-group="simulator" data-detail="bank" role="button" tabindex="0" style="--i:2"><h2>Investing Channel Mix (SIP vs One-Time)</h2><div class="cv"><canvas id="c5"></canvas></div></div>
+  <div class="c s12 pf-page-card" data-pf-group="simulator" style="--i:3"><h2>Accumulation · Cumulative Invested via Bank</h2><div class="cv"><canvas id="c9"></canvas></div><div class="mut" id="accn" style="margin-top:.5rem"></div></div>
+  <div class="c s12 pf-page-card" data-pf-group="simulator" data-detail="bank" role="button" tabindex="0" style="--i:4"><div class="phead" style="align-items:center;gap:.7rem;flex-wrap:wrap"><h2 style="margin:0">Investment by Month (₹)</h2><span class="sp"></span><div class="seg" id="invMonthTabs" role="group" aria-label="Investment by month view"><button type="button" class="on" data-inv-month="actual">Actual</button><button type="button" data-inv-month="compare">Actual vs plan</button></div></div><div class="cv"><canvas id="c4"></canvas></div><div class="mut" id="invMonthNote" style="margin-top:.45rem">Actual investment payments identified in the bank statement.</div></div>
+
+  <div class="c s12 pf-page-card pf-inspector-card" data-pf-group="inspector" id="pfInspectorView" style="--i:0"></div>
  </section>
  <section class="view g" id="cal">
   <div class="c s8" style="--i:0"><div class="phead"><h2 id="calT" style="margin:0"></h2><span class="sp"></span><button class="btn" id="calPrev">‹</button><button class="btn" id="calToday">Today</button><button class="btn" id="calNext">›</button></div><div class="callegend" id="calLeg"></div><div class="calg" id="calG"></div><div class="calup"><h2>Coming up</h2><ul id="calUp" class="hlist"></ul></div></div>
@@ -801,14 +1488,14 @@ body.theme-light .cc-overview-metric{background:#fff}
    <div class="pkpi cal-kpis"><div class="detail-kpi"><small>Required this month</small><b id="calCommitted">—</b></div><div class="detail-kpi"><small>Completed this month</small><b class="pos" id="calDone">—</b></div><div class="detail-kpi"><small>Pending this month</small><b class="neg" id="calPending">—</b></div><div class="detail-kpi"><small>Completion rate</small><b id="calProgress">—</b></div></div>
    <div class="cal-hint"><span>↳</span><div><b>Update what you have already invested or paid.</b><div class="mut">Enter the actual amount paid or invested, even when it exceeds the monthly plan. Pending never goes below zero. Only items due in the selected month are listed. Values are saved month-wise in this browser.</div></div></div>
    <div class="cal-summary-strip"><div><span>Investments</span><b id="calInvSummary">—</b><small id="calInvSub">Completed / pending</small></div><div><span>Payments &amp; expenses</span><b id="calExpSummary">—</b><small id="calExpSub">Completed / pending</small></div></div>
-   <div class="phead cal-filterbar"><div><b>Show</b></div><span class="sp"></span><div class="seg" id="calStatusFilter" role="group" aria-label="Filter calendar status"><button type="button" data-cal-filter="all" class="on">All</button><button type="button" data-cal-filter="pending">Pending</button><button type="button" data-cal-filter="completed">Completed</button></div></div><div class="tw cal-table-wrap"><table class="cal-table"><thead><tr><th>Payment / investment</th><th>Category</th><th class="r">Amount due this month</th><th class="r">Already added / paid</th><th class="r">Pending</th><th>Due day</th><th>Next due</th></tr></thead><tbody id="calChecklist"></tbody></table></div>
+   <div class="phead cal-filterbar"><div><b>Show</b></div><span class="sp"></span><div class="seg" id="calStatusFilter" role="group" aria-label="Filter calendar status"><button type="button" data-cal-filter="all" class="on">All</button><button type="button" data-cal-filter="pending">Pending</button><button type="button" data-cal-filter="completed">Completed</button></div></div><div class="tw cal-table-wrap"><table class="cal-table"><thead><tr><th>Done</th><th>Payment / investment</th><th>Category</th><th class="r">Amount due this month</th><th class="r">Already added / paid</th><th class="r">Pending</th><th>Due day (this month)</th><th>Status</th></tr></thead><tbody id="calChecklist"></tbody></table></div>
    <p class="mut" style="margin-top:.8rem">Due days come from the Debit Date column in Master file, so change a date there and reload the workbook to move the entry. Where Debit Date is blank, the day is suggested from bank transactions and you can set it here. Plan, paid amounts and due days are stored locally in this browser; your workbook and bank statement are not changed.</p>
   </div>
  </section>
  <section class="view g" id="guide">
   <div class="c s12 guide-shell" style="--i:0"><div id="guideContent"></div></div>
  </section>
-<footer class="appfoot"><span class="ver" id="appVer" title="Application version">Version 2.1</span><span>Finance Dashboard · updated 07 Nov 2026</span><span class="dotsep">•</span><span>Your entries are saved in this browser</span></footer>
+<footer class="appfoot"><span class="ver" id="appVer" title="Application version">Version 2.4</span><span>Finance Dashboard · updated 07 Nov 2026</span><span class="dotsep">•</span><span>Your entries are saved in this browser</span></footer>
 </div>
 
 <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
@@ -1211,8 +1898,25 @@ function openDetail(key,value,trail=[]){
  }else if(key==='holding'){
   const x=pf()[+value],tv=sum(pf().map(z=>z.val))||1;
   if(!x){title='Holding';leaf='<div class="detail-empty">Holding not found.</div>'}
-  else{title=x.label;subtitle=x.Type+' · holding details';
-   leaf=kpis([['Invested',money(x.inv)],['Current value',money(x.val)],['P/L',sm(x.pl)],['Return',sg(x.pct)]])+detailLeaf(x.label,[['Type',x.Type],['Units held',x.units.toLocaleString('en-IN',{maximumFractionDigits:3})],['Average cost / unit',px(x.Avg)],['Current price / NAV',x.price?px(x.price):'—'],['Price as of',x.PriceDate||'Workbook value'],[x.Type==='Stock'?'Yahoo Finance ID':'AMFI scheme code',(x.Type==='Stock'?x.Symbol:x.SchemeCode)||'—'],['BSE code',x.Bse||'—'],['Share of portfolio',(x.val/tv*100).toFixed(1)+'%'],['Corpus in '+PJ.years+' yrs @ '+PJ.rate+'%',money(x.corp)]],'Units, cost and prices come from Stock & MF Tracking; live prices appear after a refresh.')}
+  else{title=x.label;subtitle=x.Type+' · holding details & price history';
+   leaf=kpis([['Invested',money(x.inv)],['Current value',money(x.val)],['P/L',sm(x.pl)],['Return',sg(x.pct)]])+
+   `<div class="pfi-panel" style="margin:1rem 0"><div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap"><h3 style="margin:0">Price / NAV History Line Graph</h3><div class="seg" id="dtlHoldRng">${Object.keys(RNG).map(r=>`<button type="button" data-dtl-rng="${r}" data-hi="${x.i}" class="${r===(window._dtlRng||'1Y')?'on':''}">${r}</button>`).join('')}</div></div><div id="dtlHoldStats" class="tstats" style="margin-top:.5rem"></div><div class="detailchart" style="height:290px;margin:.6rem 0 0"><canvas id="dtlHoldCanvas"></canvas></div></div>`+
+   detailLeaf(x.label,[['Type',x.Type],['Units held',x.units.toLocaleString('en-IN',{maximumFractionDigits:3})],['Average cost / unit',px(x.Avg)],['Current price / NAV',x.price?px(x.price):'—'],['Price as of',x.PriceDate||'Workbook value'],[x.Type==='Stock'?'Yahoo Finance ID':'AMFI scheme code',(x.Type==='Stock'?x.Symbol:x.SchemeCode)||'—'],['BSE code',x.Bse||'—'],['Share of portfolio',(x.val/tv*100).toFixed(1)+'%'],['Corpus in '+PJ.years+' yrs @ '+PJ.rate+'%',money(x.corp)]],'Units, cost and prices come from Stock & MF Tracking; live prices appear after a refresh.');
+   post=()=>{
+    const drawDtlLine=(series)=>{
+     const cvEl=$('#dtlHoldCanvas'),stEl=$('#dtlHoldStats');if(!cvEl)return;
+     const rg=window._dtlRng||'1Y',sub=sliceR(series&&series.length>1?series:synthTrajectory(x),rg),ys=sub.map(p=>p[1]),first=ys[0],last=ys[ys.length-1],hi=Math.max(...ys),lo=Math.min(...ys),chg=(last/first-1)*100,up=chg>=0;
+     const fd=t=>new Date(t).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'});
+     if(stEl)stEl.innerHTML=`<span>Change <b class="${up?'pos':'neg'}">${sg(chg)}</b></span><span>Latest <b>${px(last)}</b></span><span>High <b>${px(hi)}</b></span><span>Low <b>${px(lo)}</b></span><span>Avg Cost <b>${px(x.Avg)}</b></span>${series&&series._synthetic?'<span class="tag">Estimated trajectory (offline/unmapped)</span>':''}`;
+     const col=cv(up?'--up':'--dn')||(up?'#10b981':'#f43f5e');
+     if(detailChart){try{detailChart.destroy()}catch(e){}}
+     detailChart=mkChart(cvEl,{_keep:true,type:'line',data:{labels:sub.map(p=>fd(p[0])),datasets:[{label:'Price / NAV',data:ys,borderColor:col,backgroundColor:alphaC(col,.16),fill:true,borderWidth:2.2,pointRadius:0,pointHoverRadius:4,tension:.25},...(x.Avg>0?[{label:'Avg Buy Cost',data:ys.map(()=>x.Avg),borderColor:'#f59e0b',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}]:[])]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'bottom',labels:{color:cv('--mut'),boxWidth:10}},datalabels:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+px(c.parsed.y)}}},scales:{x:{ticks:{color:cv('--mut'),maxTicksLimit:7,maxRotation:0},grid:{display:false}},y:{ticks:{color:cv('--mut'),callback:v=>px(v)},grid:{color:cv('--grid')}}}}});
+    };
+    const hk=HK(portfolio[x.i]||x);
+    if(HM[hk])drawDtlLine(HM[hk]);
+    loadHist(x).then(d=>drawDtlLine(d)).catch(()=>drawDtlLine(synthTrajectory(x)));
+    $$('#dtlHoldRng button').forEach(b=>b.onclick=e=>{e.stopPropagation();window._dtlRng=b.dataset.dtlRng;$$('#dtlHoldRng button').forEach(z=>z.classList.toggle('on',z===b));const hk2=HK(portfolio[x.i]||x);drawDtlLine(HM[hk2]||synthTrajectory(x))});
+   }}
  }else if(key==='fy'){
   const ps=V.fy.slice().reverse();title='Total investment by financial year';
   rows=ps.map(p=>({label:fyLabel(p),value:V.g('FY','Invested',p),next:'fyYear',value2:p}));chart(title,rows,'bar');
@@ -1253,6 +1957,7 @@ function show(v,force){
     $('#tk').textContent='In-hand '+inr(V.inhand);$('#epf').textContent='EPF so far '+inr(V.epf);$('#bk').textContent='MF '+inr(V.mix[0][1]+V.mix[1][1])+' · Stock '+inr(V.mix[2][1]+V.mix[3][1]);
     const ft=sum(V.flow.map(f=>f[1]))||1;$('#flow').innerHTML=V.flow.map(f=>`<i style="background:${f[2]};width:0" data-w="${f[1]/ft*100}"></i>`).join('');setTimeout(()=>$$('#flow i').forEach(i=>i.style.width=i.dataset.w+'%'),60);
     $('#flowl').innerHTML=V.flow.map(f=>`<div data-detail="monthly" role="button" tabindex="0"><i style="background:${f[2]}"></i><span>${f[0]}</span><b>${inr(f[1])}</b><span class="bar"><b style="background:${f[2]};width:0" data-w="${f[1]/ft*100}"></b></span></div>`).join('');setTimeout(()=>$$('#flowl .bar b').forEach(i=>i.style.width=i.dataset.w+'%'),80);
+    if($('#c0')){const flPos=V.flow.filter(f=>f[1]>0);mk('c0','doughnut',flPos.map(f=>f[0]),[{data:flPos.map(f=>f[1]),backgroundColor:flPos.map(f=>f[2]),borderWidth:0}]);}
     const ins=[`Net worth is ${inr(V.net)}: assets ${inr(V.assets)} against loans of ${inr(V.liab)}.`,`${hasCalendarActual?'Actual calendar consumption is '+inr(actualSpent):'The plan allocates '+inr(V.alloc)} of ${inr(V.take)} take-home this month.`,`Investing ${inr(V.flow[0][1])} a month, ${Math.round(V.flow[0][1]/(V.take||1)*100)}% of take-home.`,`Home loan is ${(V.prin/(V.loanAmt||1)*100).toFixed(1)}% repaid; ${inr(V.out)} outstanding.`,`MaxGain parking saves ${inr(V.save)} interest and could close the loan in about ${(+V.t2).toFixed(1)} years.`];
     $('#ins').innerHTML=ins.map((t,i)=>`<li class="n" style="--i:${i}">${t}</li>`).join('');
   }
@@ -1453,8 +2158,10 @@ function renderCal(){
  for(let d=1;d<=dim;d++){const it=S.filter(x=>x.day&&dd(x)===d),tot=sum(it.map(x=>x.amt)),pend=it.filter(x=>x.amt-calAdded(y,m,x.r.Item,x.amt)>.009),dow=(new Date(y,m,d).getDay()+6)%7,stt=!it.length?'':!pend.length?' done':past(d)?' late':'';
   h+=`<div class="cald${isCur&&now.getDate()===d?' today':''}${calSel===d?' sel':''}${it.length?' has':''}${stt}" data-day="${d}" data-dow="${dow}" style="--h:${Math.round(tot/mx*24)}%" tabindex="0" role="button" aria-label="${d} ${esc(mname)}: ${it.length} due"><span class="dn">${d}</span>${it.length?`<span class="dtot hv">${inr(tot)}</span>`:''}<div class="dch">${it.slice(0,2).map(x=>`<span class="cchip" style="--cc:${C[x.ci]}"><i></i>${esc(shortN(x.r.Item))}</span>`).join('')}${it.length>2?`<span class="more">+${it.length-2} more</span>`:''}</div></div>`}
  $('#calG').innerHTML=h;
- const sel=calSel?S.filter(x=>x.day&&dd(x)===calSel):[];
- $('#calSel').innerHTML=calSel?`<div class="seldh"><h3>${calSel} ${esc(mname)}</h3><span class="mut">${sel.length?sel.length+' due · '+inr(sum(sel.map(x=>x.amt))):''}</span></div>`+(sel.length?'<ul class="dlist">'+sel.map(x=>{const a=calAdded(y,m,x.r.Item,x.amt),p=Math.max(0,x.amt-a);return `<li class="n selit" style="--cc:${C[x.ci]}"><i class="dot"></i><div><b>${esc(x.r.Item)}</b><div class="mut">${x.g} · ${esc(x.src)}</div></div><div class="r"><b class="hv">${inr(x.amt)}</b><span class="stat ${p?'pend':'ok'}">${p?'Pending '+inr(p):(a>x.amt+.009?'▲ Overspent '+inr(a-x.amt):'✓ Done')}</span></div></li>`}).join('')+'</ul>':'<div class="mut">Nothing due on this day.</div>'):'<div class="mut seldh">Select a day to see what is due.</div>';
+ if(!calSel){const firstDueDay=S.filter(x=>x.day).map(dd).sort((a,b)=>a-b)[0];calSel=isCur?now.getDate():(firstDueDay||1)}
+ const sel=calSel?allS.filter(x=>x.day&&dd(x)===calSel):[];
+ const selPendCnt=sel.filter(x=>x.amt-calAdded(y,m,x.r.Item,x.amt)>.009).length;
+ $('#calSel').innerHTML=calSel?`<div class="seldh"><div><h3>${calSel} ${esc(mname)}</h3><span class="mut">${sel.length?sel.length+' task'+(sel.length===1?'':'s')+' · '+inr(sum(sel.map(x=>x.amt))):'No scheduled tasks'}</span></div>${sel.length>1?`<button type="button" class="btn sm cal-markall" id="calSelMarkAll">${selPendCnt?'✓ Mark all done':'↺ Undo all'}</button>`:''}</div>`+(sel.length?'<ul class="dlist cal-task-list">'+sel.map(x=>{const a=calAdded(y,m,x.r.Item,x.amt),p=Math.max(0,x.amt-a),done=p<=.009;return `<li class="n selit cal-chk-row ${done?'is-done':''}" style="--cc:${C[x.ci]}"><label class="cal-chk-wrap"><input type="checkbox" class="cal-day-cb" data-item="${esc(x.r.Item)}" data-amt="${x.amt}" ${done?'checked':''}><span class="cal-cb-ui"></span></label><div class="cal-task-info" data-cal-lbl="${esc(x.r.Item)}"><b>${esc(x.r.Item)}</b><div class="mut">${x.g} · ${esc(x.src)}</div></div><div class="r"><b class="hv">${inr(x.amt)}</b><span class="stat ${p?'pend':'ok'}">${p?'Pending '+inr(p):(a>x.amt+.009?'▲ Overspent '+inr(a-x.amt):'✓ Completed')}</span></div></li>`}).join('')+'</ul>':'<div class="mut">Nothing due on this day. Tap another highlighted date on the calendar.</div>'):'<div class="mut seldh">Select a day to see what is due.</div>';
  const committed=sum(S.map(x=>x.amt)),doneAmt=sum(S.map(x=>calAdded(y,m,x.r.Item,x.amt))),pendingAmt=sum(S.map(x=>Math.max(0,x.amt-calAdded(y,m,x.r.Item,x.amt))));
  const pendingCount=S.filter(x=>x.amt-calAdded(y,m,x.r.Item,x.amt)>.009).length;
  $('#calTot').textContent=inr(pendingAmt);$('#calSub').textContent=inr(doneAmt)+' paid / invested of '+inr(committed)+' planned · '+pendingCount+' item(s) pending';
@@ -1464,10 +2171,12 @@ function renderCal(){
  try{updateCalBadge()}catch(e){}
  {const ovBy={};allS.forEach(x=>{const o=calAdded(y,m,x.r.Item,x.amt)-x.amt;if(o>.009){const b=ovBy[x.g]||(ovBy[x.g]={t:0,i:[]});b.t+=o;b.i.push(x.r.Item+' ('+inr(o)+')')}});const ks=Object.keys(ovBy),ovEl=$('#calOverspend');if(ovEl){ovEl.hidden=!ks.length;ovEl.innerHTML=ks.length?'<b>⚠ Overspent in '+esc(mname)+': '+inr(sum(ks.map(k=>ovBy[k].t)))+' in total</b>'+ks.map(k=>'<div><span class="tag">'+esc(k)+'</span> overspent by <b>'+inr(ovBy[k].t)+'</b> · '+ovBy[k].i.map(esc).join(', ')+'</div>').join(''):''}}
  $('#calTaskMonth').textContent='Tracker for '+mname+' · update the amount already paid or invested for each line';
- $('#calChecklist').innerHTML=S.length?S.slice().sort((a,b)=>(a.day||99)-(b.day||99)).map(x=>{const added=calAdded(y,m,x.r.Item,x.amt),pending=Math.max(0,x.amt-added),pct=x.amt?Math.min(100,added/x.amt*100):0;return `<tr class="${pending?'':'paid'}"><td><div class="cal-item-name">${esc(x.r.Item)}</div><div class="cal-progress"><i style="width:${pct}%"></i></div></td><td><span class="tag">${esc(x.g)}</span></td><td class="r hv">${inr(x.amt)}</td><td class="r"><input class="q cal-added" type="number" min="0" step="1" data-item="${esc(x.r.Item)}" value="${added?added:''}" placeholder="0" aria-label="Already paid or invested for ${esc(x.r.Item)}"></td><td class="r hv pending-cell ${pending?'neg':'pos'}">${pending?inr(pending):(added>x.amt+.009?'<span class="cal-over">▲ Overspent '+inr(added-x.amt)+'</span>':inr(0))}</td><td><input class="q cal-due due" type="number" min="1" max="31" data-k="${esc(x.r.Item)}" value="${x.m?(x.day||''):(DD[x.r.Item]||'')}" placeholder="${x.day||'—'}" ${x.m?'disabled title="Set by Debit Date in Master file. Change it there."':''} aria-label="Due day for ${esc(x.r.Item)}"></td><td><div>${x.day?dueLabel(nextDue(x.day)):'—'}</div><div class="cal-source">${esc(x.src)}</div></td></tr>`}).join(''):'<tr><td colspan="7" class="mut">No active monthly commitments found in Master file.</td></tr>';
+ const curMonthDueTxt=d=>{if(!d)return 'Not set';const dm=Math.min(d,dim),dt=new Date(y,m,dm),lbl=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});if(!isCur)return lbl+' (this month)';const diff=dm-now.getDate();return (diff===0?'Today':diff===1?'Tomorrow':diff>1?'In '+diff+' days':Math.abs(diff)+'d ago')+' · '+lbl};
+ $('#calChecklist').innerHTML=S.length?S.slice().sort((a,b)=>(a.day||99)-(b.day||99)).map(x=>{const added=calAdded(y,m,x.r.Item,x.amt),pending=Math.max(0,x.amt-added),done=pending<=.009,pct=x.amt?Math.min(100,added/x.amt*100):0;return `<tr class="${pending?'':'paid'}"><td style="width:42px;text-align:center"><label class="cal-chk-wrap"><input type="checkbox" class="cal-day-cb" data-item="${esc(x.r.Item)}" data-amt="${x.amt}" ${done?'checked':''} aria-label="Mark ${esc(x.r.Item)} as done"><span class="cal-cb-ui"></span></label></td><td><div class="cal-item-name">${esc(x.r.Item)}</div><div class="cal-progress"><i style="width:${pct}%"></i></div></td><td><span class="tag">${esc(x.g)}</span></td><td class="r hv">${inr(x.amt)}</td><td class="r"><input class="q cal-added" type="number" min="0" step="1" data-item="${esc(x.r.Item)}" value="${added?added:''}" placeholder="0" aria-label="Already paid or invested for ${esc(x.r.Item)}"></td><td class="r hv pending-cell ${pending?'neg':'pos'}">${pending?inr(pending):(added>x.amt+.009?'<span class="cal-over">▲ Overspent '+inr(added-x.amt)+'</span>':inr(0))}</td><td><input class="q cal-due due" type="number" min="1" max="31" data-k="${esc(x.r.Item)}" value="${x.m?(x.day||''):(DD[x.r.Item]||'')}" placeholder="${x.day||'—'}" ${x.m?'disabled title="Set by Debit Date in Master file. Change it there."':''} aria-label="Due day for ${esc(x.r.Item)}"></td><td><div><span class="stat ${done?'ok':'pend'}">${done?'✓ Completed':curMonthDueTxt(x.day)}</span></div><div class="cal-source">${esc(x.src)}</div></td></tr>`}).join(''):'<tr><td colspan="8" class="mut">No active monthly commitments found in Master file.</td></tr>';
  $('#calGrp').innerHTML=[['Investments',0],['Insurance',4],['Loan EMIs',3],['Expenses',2]].map(([g,ci])=>`<div><i style="background:${C[ci]}"></i><span>${g}</span><b class="hv">${inr(sum(S.filter(x=>x.g===g).map(x=>Math.max(0,x.amt-calAdded(y,m,x.r.Item,x.amt)))))}</b></div>`).join('');
- const up=S.filter(x=>x.day).map(x=>({x,n:nextDue(x.day)})).filter(u=>calAdded(u.n.d.getFullYear(),u.n.d.getMonth(),u.x.r.Item,u.x.amt)<u.x.amt-.009).sort((a,b)=>a.n.diff-b.n.diff||a.x.day-b.x.day);
- $('#calUp').innerHTML=up.slice(0,8).map((u,i)=>`<li class="n ${u.n.diff<=3?'w':''}" style="--i:${i}"><b>${esc(shortN(u.x.r.Item))}</b> <span class="hv">${inr(Math.max(0,u.x.amt-calAdded(u.n.d.getFullYear(),u.n.d.getMonth(),u.x.r.Item,u.x.amt)))}</span><div class="mut">${dueLabel(u.n)} · remaining</div></li>`).join('')||(S.some(x=>x.day)?'<li class="n">🎉 Nothing pending. All upcoming targets are met.</li>':'<li class="n">No due days set yet.</li>');
+ const up=allS.filter(x=>{if(!x.day)return false;const dm=dd(x),rem=x.amt-calAdded(y,m,x.r.Item,x.amt);if(rem<=.009)return false;if(isCur&&dm<now.getDate())return false;return true}).map(x=>{const dm=dd(x),dt=new Date(y,m,dm),diff=isCur?dm-now.getDate():dm;return{x,dm,dt,diff}}).sort((a,b)=>a.dm-b.dm);
+ const upHead=document.querySelector('#cal .calup h2');if(upHead)upHead.textContent='Remaining this month ('+calM.toLocaleString('en-IN',{month:'short'})+')';
+ $('#calUp').innerHTML=up.slice(0,8).map((u,i)=>`<li class="n ${isCur&&u.diff<=3?'w':''}" style="--i:${i}" data-cal-jump="${u.dm}" role="button" tabindex="0" title="Click to select day ${u.dm}"><b>${esc(shortN(u.x.r.Item))}</b> <span class="hv">${inr(Math.max(0,u.x.amt-calAdded(y,m,u.x.r.Item,u.x.amt)))}</span><div class="mut">${(isCur?(u.diff===0?'Today':u.diff===1?'Tomorrow':'In '+u.diff+' days'):'Day '+u.dm)+' · '+u.dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</div></li>`).join('')||(allS.some(x=>x.day)?'<li class="n">🎉 No more upcoming dues left in '+esc(mname)+'.</li>':'<li class="n">No due days set yet.</li>');
 }
 function ledger(){
   const q=$('#q').value.toLowerCase(),rows=D.s.filter(r=>!q||(String(r.Merchant||'')+' '+r.Details).toLowerCase().includes(q)).slice().reverse();
@@ -1807,20 +2516,58 @@ const hslot=()=>new Promise(res=>{const go=()=>{if(HACT<2){HACT++;res()}else HW.
 const hdone=()=>{HACT--;const n=HW.shift();if(n)n()};
 function compactSeries(a){const cut=Date.now()-366*864e5;return a.filter((r,i)=>r[0]>=cut||i%5===0||i===a.length-1)}
 const sliceR=(d,r)=>{const cut=d[d.length-1][0]-RNG[r]*864e5;return d.filter(p=>p[0]>=cut)};
+function synthTrajectory(x){
+ const base=portfolio[x.i]||x,held=Math.max(0,num(base.Units)-num(base.Sold)),wbP=num(base.Price),wbV=num(base.Value),
+  curP=num(base.LivePrice)||(wbP>0?wbP:(held>0&&wbV>0?wbV/held:100)),
+  avgP=num(base.Avg)>0?num(base.Avg):curP*0.88,prevP=num(base.PrevPrice)>0?num(base.PrevPrice):curP*0.997,
+  now=Date.now(),days=365,pts=[],seedStr=String(base.Symbol||base.Bse||base.SchemeCode||base.Name||'S');
+ let seed=0;for(let i=0;i<seedStr.length;i++)seed=(seed*31+seedStr.charCodeAt(i))%9973;
+ for(let i=days;i>=0;i--){
+  const t=now-i*864e5,prog=(days-i)/days;
+  if(i===0){pts.push([t,Number(curP.toFixed(2))]);continue}
+  if(i===1){pts.push([t,Number(prevP.toFixed(2))]);continue}
+  const ease=prog<0.5?2*prog*prog:1-Math.pow(-2*prog+2,2)/2;
+  const w1=Math.sin(prog*18+seed)*0.022*(1-prog*0.4),w2=Math.cos(prog*43+seed*0.5)*0.011*(1-prog*0.5);
+  const val=Math.max(0.01,(avgP+(curP-avgP)*ease)*(1+w1+w2));
+  pts.push([t,Number(val.toFixed(2))]);
+ }
+ pts._synthetic=true;return pts;
+}
 function loadHist(x){
- const k=HK(x);if(HM[k])return Promise.resolve(HM[k]);if(HQ[k])return HQ[k];
+ const base=portfolio[x.i]||x,k=HK(base);if(HM[k]&&!HM[k]._synthetic)return Promise.resolve(HM[k]);if(HQ[k])return HQ[k];
  const c0=histCache()[k];if(c0&&Date.now()-c0.t<6*36e5&&c0.d&&c0.d.length>5){HM[k]=c0.d;return Promise.resolve(c0.d)}
  const pr=(async()=>{await hslot();try{
   let d;
-  if(x.Type==='Mutual Fund'){const al=MFALIAS.find(a=>a[0].test(x.Name||'')),code=x.SchemeCode||(al&&al[1]);if(!code)throw Error('Refresh live prices once so the scheme code is found');
-   const j=await mfJson('https://api.mfapi.in/mf/'+encodeURIComponent(code));
-   d=(j.data||[]).map(r=>{const p=String(r.date).split('-');return[Date.UTC(+p[2],+p[1]-1,+p[0]),Number(r.nav)]}).filter(r=>r[1]>0).sort((a,b)=>a[0]-b[0])}
-  else{const ts=tapetideSymbol(x),syms=[...new Set([String(x.Symbol||'').trim(),ts&&ts+'.NS',ts&&ts+'.BO'].filter(Boolean))];let err;
-   for(const s of syms){try{const r=await raceFetch('/v8/finance/chart/'+encodeURIComponent(s)+'?range=5y&interval=1d'),res=r.chart.result[0],t=res.timestamp||[],cl=(res.indicators&&res.indicators.quote&&res.indicators.quote[0]&&res.indicators.quote[0].close)||[];d=t.map((v,i)=>[v*1000,cl[i]]).filter(r=>r[1]>0);if(d.length>5)break}catch(e){err=e}}
-   if(!d||d.length<=5)throw err||Error('No price history found')}
-  if(!d||d.length<=5)throw Error('No price history found');
-  d=compactSeries(d);HM[k]=d;try{const cc=histCache();cc[k]={t:Date.now(),d};localStorage.setItem(HISTK,JSON.stringify(cc))}catch(_){}
-  return d}finally{hdone()}})();
+  if(base.Type==='Mutual Fund'){
+   const al=MFALIAS.find(a=>a[0].test(base.Name||''));
+   let code=base.SchemeCode||(al&&al[1]);
+   if(!code){
+    try{
+     const tok=s=>String(s||'').toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,' ').split(' ').filter(Boolean);
+     const need=tok(base.Name).filter(w=>!['direct','growth','plan','fund','option','mutual','mf','india'].includes(w));
+     const r=await fetch('https://api.mfapi.in/mf/search?q='+encodeURIComponent(need.slice(0,4).join(' ')));
+     if(r.ok){
+      const a=await r.json();
+      const sc=z=>{const w=tok(z.schemeName);if(!need.every(n=>w.includes(n)))return null;let s=0;if(w.includes('direct'))s+=3;if(w.includes('growth'))s+=3;if(w.some(k=>['idcw','dividend','bonus','regular'].includes(k)))s-=6;return s-w.length*.01};
+      const hits=a.map(z=>({z,s:sc(z)})).filter(o=>o.s!==null).sort((p,q)=>q.s-p.s);
+      if(hits.length){code=String(hits[0].z.schemeCode);base.SchemeCode=code;x.SchemeCode=code}
+     }
+    }catch(_){}
+   }
+   if(code){
+    const j=await mfJson('https://api.mfapi.in/mf/'+encodeURIComponent(code));
+    d=(j.data||[]).map(r=>{const p=String(r.date).split('-');return[Date.UTC(+p[2],+p[1]-1,+p[0]),Number(r.nav)]}).filter(r=>r[1]>0).sort((a,b)=>a[0]-b[0]);
+   }
+  }else{
+   const ts=tapetideSymbol(base),rawSym=String(base.Symbol||'').trim().replace(/^XBOM:/i,''),bse=String(base.Bse||'').trim();
+   const syms=[...new Set([rawSym,rawSym&&!rawSym.includes('.')?rawSym+'.NS':'',rawSym&&!rawSym.includes('.')?rawSym+'.BO':'',ts&&ts+'.NS',ts&&ts+'.BO',bse&&bse+'.BO'].filter(Boolean))];
+   for(const s of syms){try{const r=await raceFetch('/v8/finance/chart/'+encodeURIComponent(s)+'?range=5y&interval=1d'),res=r.chart.result[0],t=res.timestamp||[],cl=(res.indicators&&res.indicators.quote&&res.indicators.quote[0]&&res.indicators.quote[0].close)||[];d=t.map((v,i)=>[v*1000,cl[i]]).filter(r=>r[1]>0);if(d.length>5)break}catch(e){}}
+  }
+  if(!d||d.length<=5){
+   const syn=synthTrajectory(base);HM[k]=syn;return syn;
+  }
+  d=compactSeries(d);HM[k]=d;delete HF[k];try{const cc=histCache();cc[k]={t:Date.now(),d};localStorage.setItem(HISTK,JSON.stringify(cc))}catch(_){}
+  return d}catch(err){const syn=synthTrajectory(base);HM[k]=syn;return syn}finally{hdone()}})();
  HQ[k]=pr;pr.then(()=>{delete HQ[k]},()=>{delete HQ[k]});return pr}
 function spark(d){const a=sliceR(d,'3M');if(a.length<2)return '';
  const w=112,h=34,ys=a.map(p=>p[1]),mn=Math.min.apply(null,ys),mx=Math.max.apply(null,ys),sp=(mx-mn)||1,
@@ -1860,11 +2607,7 @@ function renderPortfolio(){
  const all=pf(),sel=(pfFilter==='all'?all:all.filter(x=>x.Type===pfFilter)).filter(x=>!pfQuery||[x.label,x.Name,x.Symbol,x.Bse,x.SchemeCode,x.Type].some(v=>String(v||'').toLowerCase().includes(pfQuery))).slice().sort(PFSORT[pfSort]||PFSORT.val);
  const inv=sum(sel.map(x=>x.inv)),val=sum(sel.map(x=>x.val)),pl=val-inv;
  $('#portInvested').textContent=inr(inv);$('#portValue').textContent=inr(val);$('#portPL').textContent=sm(pl);$('#portPL').className='med '+(pl>=0?'pos':'neg');$('#portPct').textContent=sg(inv?pl/inv*100:0);$('#portPct').className='med '+(pl>=0?'pos':'neg');
- {const g=t=>{const a=all.filter(x=>x.Type===t),i=sum(a.map(x=>x.inv)),v=sum(a.map(x=>x.val));return{n:a.length,i,v,p:v-i,r:i?(v-i)/i*100:0}},M=g('Mutual Fund'),S=g('Stock'),T=(M.v+S.v)||1;
-  const card=(t,lab,ico,o)=>`<div class="c psc ${pfFilter===t?'act':''}" data-pf="${t}" role="button" tabindex="0" title="Click to filter, click again to show all"><div class="pscH"><span class="pico">${ico}</span><h2>${lab}</h2><span class="tag">${o.n} holdings</span></div><div class="med">${inr(o.v)}</div><div class="pscS"><span>Invested <b class="hv">${inr(o.i)}</b></span><span class="${o.p>=0?'pos':'neg'}">P/L <b class="hv">${sm(o.p)}</b> <span class="plpill ${o.p>=0?'up':'dn'}">${sg(o.r)}</span></span></div><div class="alloc big"><i style="width:${(o.v/T*100).toFixed(1)}%"></i></div><div class="mut sharetxt">${(o.v/T*100).toFixed(1)}% of market value</div></div>`;
-  $('#portSplit').innerHTML=card('Mutual Fund','Total mutual funds · current value','📈',M)+card('Stock','Total stocks · current value','🏢',S);
-  $('#portSplit').onclick=e=>{const c=e.target.closest('[data-pf]');if(c){const b=$('#pfSeg button[data-f="'+(pfFilter===c.dataset.pf?'all':c.dataset.pf)+'"]');if(b)b.click()}};
-  $('#portSplit').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset.pf){e.preventDefault();e.target.click()}};
+ {
   $('#portInvSub').textContent=sel.length+' holdings · '+(pfFilter==='all'?'MF + stocks':pfFilter==='Stock'?'stocks':'mutual funds');
   const wb=sum(sel.map(x=>x.Value||0)),df=val-wb,live=sel.some(x=>x.LivePrice!=null);
   $('#portValSub').textContent=(live?'Live prices · ':'')+'Workbook '+inr(wb)+(Math.abs(df)>=1?' · '+(df>=0?'+':'−')+inr(Math.abs(df))+' vs workbook':' · matches');
@@ -2287,4 +3030,733 @@ $('#calMail').onclick=()=>{const to=$('#calEmail').value.trim();if(!/^[^@\s]+@[^
  const k=calMonthKey(calM.getFullYear(),calM.getMonth()),rows=calRows(k),pl=sum(rows.map(r=>r.plan)),pd=sum(rows.map(r=>r.paid)),pe=sum(rows.map(r=>r.pend)),mn=calM.toLocaleString('en-IN',{month:'long',year:'numeric'});
  const body=`Payment & investment tracker · ${mn}\n\nPlanned ${inr(pl)} · Paid ${inr(pd)} · Pending ${inr(pe)}\n\n`+rows.map(r=>`${r.day?'Day '+r.day:'–'} | ${r.item} | plan ${inr(r.plan)} | paid ${inr(r.paid)} | ${r.st}`).join('\n')+'\n\n(Attach the month-wise Excel from the dashboard if you want the full sheet.)';
  location.href='mailto:'+to+'?subject='+encodeURIComponent('Finance calendar · '+mn)+'&body='+encodeURIComponent(body.slice(0,1800));calSt('✓ Email draft opened in your mail app. Browsers cannot send mail or attach files by themselves.','ok')};
-</script></body></html>
+</script>
+<div class="mtools-sheet" id="mobileToolsSheet" role="dialog" aria-modal="true" aria-label="Quick tools and settings">
+ <div class="mtools-box">
+  <div class="mtools-grip"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+   <strong style="font:800 .98rem Sora">Quick Tools &amp; PWA Controls</strong>
+   <button type="button" class="btn sm" id="mtoolsClose">✕ Close</button>
+  </div>
+  <div class="mut" id="mtoolsFileStatus" style="margin-top:.25rem">Workbook status</div>
+  <div class="mtools-grid">
+   <button type="button" class="btn p" id="mtOpenWb">📂 Open Workbook</button>
+   <button type="button" class="btn" id="mtRefreshWb">↻ Reload Workbook</button>
+   <button type="button" class="btn" id="mtRefreshPx">⚡ Live Prices</button>
+   <button type="button" class="btn" id="mtThemeStudio">🎨 Theme Studio</button>
+   <button type="button" class="btn" id="mtPrivacy">🙈 Toggle Privacy</button>
+   <button type="button" class="btn" id="mtBackupCal">↓ Calendar Backup</button>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding-top:.55rem;border-top:1px solid var(--b)">
+   <span class="mut">Holdings Status Filter</span>
+   <div class="seg" id="mtStatusSeg">
+    <button type="button" class="on" data-st="All">All</button>
+    <button type="button" data-st="Active">Active</button>
+    <button type="button" data-st="Closed">Closed</button>
+   </div>
+  </div>
+ </div>
+</div>
+<script>
+/* ===== v2.2 Page-Wise Portfolio Transitions, Credit Card Workspace & Mobile PWA Enhancements ===== */
+(function(){
+ const PF_PAGES = ['holdings','analytics','simulator','inspector'];
+ const CC_PAGES = ['wallet','ledger','analytics','all'];
+ let curPfPage = 'holdings';
+ let curCcPage = 'wallet';
+ let curInspectIdx = 0;
+ let pfiRange = '1Y';
+ let ccFilterMode = 'all';
+
+ // Move #tape into the Holdings card so it stays neatly inside Page 1
+ const tapeEl = document.getElementById('tape');
+ const pkpiEl = document.querySelector('#market .pkpi');
+ if(tapeEl && pkpiEl && pkpiEl.parentElement){
+  pkpiEl.parentElement.insertBefore(tapeEl, pkpiEl);
+ }
+
+ // Resize visible Chart.js instances after page transition
+ function resizeVisibleCharts(scope){
+  setTimeout(()=>{
+   Object.values(charts||{}).forEach(ch=>{
+    try{if(ch && ch.canvas && (!scope || scope.contains(ch.canvas))) ch.resize();}catch(e){}
+   });
+  }, 60);
+ }
+
+ // Portfolio Page-Wise Navigation
+ window.switchPfPage = function(target, holdIdx){
+  const market = document.getElementById('market');
+  if(!market || !PF_PAGES.includes(target)) return;
+  const oldIdx = PF_PAGES.indexOf(curPfPage);
+  const newIdx = PF_PAGES.indexOf(target);
+  curPfPage = target;
+  if(holdIdx !== undefined && holdIdx !== null) curInspectIdx = +holdIdx || 0;
+
+  const runSwitch = ()=>{
+   market.dataset.pfPage = target;
+   market.classList.remove('pf-anim-next','pf-anim-prev');
+   void market.offsetWidth;
+   market.classList.add(newIdx >= oldIdx ? 'pf-anim-next' : 'pf-anim-prev');
+   $$('#pfPageNav .subpage-tab').forEach(b=>{
+    const on = b.dataset.pfTab === target;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+   });
+   const ind = document.getElementById('pfPageIndicator');
+   if(ind) ind.textContent = 'Page ' + (newIdx + 1) + ' / ' + PF_PAGES.length;
+   if(target === 'inspector') renderPfInspector(curInspectIdx);
+   if(target === 'analytics' || target === 'simulator'){
+    try{renderPortfolioAnalysis(); renderPfAnalyticsExtras();}catch(e){}
+   }
+   resizeVisibleCharts(market);
+  };
+
+  if(document.startViewTransition && !matchMedia('(prefers-reduced-motion:reduce)').matches){
+   document.startViewTransition(runSwitch);
+  } else {
+   runSwitch();
+  }
+ };
+
+ // Credit Card Page-Wise Navigation
+ window.switchCcPage = function(target){
+  const cardsSec = document.getElementById('cards');
+  if(!cardsSec || !CC_PAGES.includes(target)) return;
+  const oldIdx = CC_PAGES.indexOf(curCcPage);
+  const newIdx = CC_PAGES.indexOf(target);
+  curCcPage = target;
+  cardsSec.dataset.ccPage = target;
+  cardsSec.classList.remove('cc-anim-next','cc-anim-prev');
+  void cardsSec.offsetWidth;
+  cardsSec.classList.add(newIdx >= oldIdx ? 'cc-anim-next' : 'cc-anim-prev');
+  $$('#ccPageNav .subpage-tab').forEach(b=>{
+   const on = b.dataset.ccTab === target;
+   b.classList.toggle('on', on);
+   b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  const ind = document.getElementById('ccPageIndicator');
+  if(ind) ind.textContent = target === 'all' ? 'Full View' : ('Page ' + (newIdx + 1) + ' / 3');
+  resizeVisibleCharts(cardsSec);
+ };
+
+ // Bind Portfolio Sub-page Tabs & Pager
+ const pfNav = document.getElementById('pfPageNav');
+ if(pfNav){
+  pfNav.addEventListener('click', e=>{
+   const tab = e.target.closest('[data-pf-tab]');
+   if(tab){ switchPfPage(tab.dataset.pfTab); return; }
+   if(e.target.closest('#pfPrevPage')){
+    const i = (PF_PAGES.indexOf(curPfPage) - 1 + PF_PAGES.length) % PF_PAGES.length;
+    switchPfPage(PF_PAGES[i]);
+   }
+   if(e.target.closest('#pfNextPage')){
+    const i = (PF_PAGES.indexOf(curPfPage) + 1) % PF_PAGES.length;
+    switchPfPage(PF_PAGES[i]);
+   }
+  });
+ }
+
+ // Bind Credit Card Sub-page Tabs & Pager
+ const ccNav = document.getElementById('ccPageNav');
+ if(ccNav){
+  ccNav.addEventListener('click', e=>{
+   const tab = e.target.closest('[data-cc-tab]');
+   if(tab){ switchCcPage(tab.dataset.ccTab); return; }
+   const sub = ['wallet','ledger','analytics'];
+   const curI = Math.max(0, sub.indexOf(curCcPage));
+   if(e.target.closest('#ccPrevPage')) switchCcPage(sub[(curI - 1 + sub.length) % sub.length]);
+   if(e.target.closest('#ccNextPage')) switchCcPage(sub[(curI + 1) % sub.length]);
+  });
+ }
+
+ // Render Portfolio Page 2 Extras: Executive Summary & Allocation Matrix
+ window.renderPfAnalyticsExtras = function(){
+  const all = pf();
+  const execEl = document.getElementById('pfExecSummary');
+  const matEl = document.getElementById('pfAllocMatrix');
+  if(!all.length){
+   if(execEl) execEl.innerHTML = '<div class="mut">Load workbook to see executive portfolio analytics.</div>';
+   if(matEl) matEl.innerHTML = '';
+   return;
+  }
+  const totVal = sum(all.map(x=>x.val)) || 1;
+  const totInv = sum(all.map(x=>x.inv)) || 1;
+  const winners = all.filter(x=>x.pl >= 0);
+  const byRet = all.slice().sort((a,b)=>b.pct - a.pct);
+  const byPl = all.slice().sort((a,b)=>b.pl - a.pl);
+  const byVal = all.slice().sort((a,b)=>b.val - a.val);
+  const top1 = byRet[0], bot1 = byRet[byRet.length-1], topGain = byPl[0], topPos = byVal[0];
+
+  if(execEl){
+   execEl.innerHTML = '<h2>Executive Performance Scorecard · Click any tile to inspect holding</h2><div class="pf-exec-grid">' +
+    `<div class="pf-exec-tile" data-pfi-open="${top1.i}"><small>Top % Performer</small><b>${esc(top1.label)}</b><span class="pos">${sg(top1.pct)} (${sm(top1.pl)})</span></div>` +
+    `<div class="pf-exec-tile" data-pfi-open="${topGain.i}"><small>Highest ₹ Wealth Gain</small><b>${esc(topGain.label)}</b><span class="${topGain.pl>=0?'pos':'neg'} hv">${sm(topGain.pl)}</span></div>` +
+    `<div class="pf-exec-tile" data-pfi-open="${topPos.i}"><small>Largest Concentration</small><b>${esc(topPos.label)}</b><span class="hv">${(topPos.val/totVal*100).toFixed(1)}% of portfolio (${inr(topPos.val)})</span></div>` +
+    `<div class="pf-exec-tile" data-pfi-open="${bot1.i}"><small>Win / Loss Breadth</small><b>${winners.length} / ${all.length} in Profit</b><span class="mut">Laggard: ${esc(bot1.label)} (${sg(bot1.pct)})</span></div>` +
+    '</div>';
+  }
+  if(matEl){
+   matEl.innerHTML = '<h2>Portfolio Weight &amp; Allocation Matrix · Click any bar for Deep-Dive</h2><div class="pf-alloc-list">' +
+    byVal.map((x, idx)=>{
+     const w = (x.val / totVal * 100);
+     const col = C[idx % C.length];
+     return `<div class="pf-alloc-row" data-pfi-open="${x.i}">
+      <div><b>${esc(x.label)}</b><div class="mut">${x.Type} · Cost <span class="hv">${inr(x.inv)}</span></div></div>
+      <div class="pf-alloc-bar"><i style="width:${Math.min(100,w).toFixed(1)}%;background:${col}"></i></div>
+      <div style="text-align:right"><b class="hv">${inr(x.val)}</b><div class="${x.pl>=0?'pos':'neg'}" style="font-size:.72rem">${w.toFixed(1)}% · ${sg(x.pct)}</div></div>
+     </div>`;
+    }).join('') + '</div>';
+  }
+ };
+
+ // Render Portfolio Page 4: Full-Page Holding Deep-Dive Inspector
+ window.renderPfInspector = function(idx){
+  const host = document.getElementById('pfInspectorView');
+  if(!host) return;
+  const all = pf();
+  if(!all.length){
+   host.innerHTML = '<div class="mut">No portfolio holdings loaded yet. Open your workbook to inspect individual positions.</div>';
+   return;
+  }
+  if(idx < 0 || idx >= all.length) idx = 0;
+  curInspectIdx = idx;
+  const x = all.find(h=>h.i === idx) || all[0];
+  const posInAll = all.indexOf(x);
+  const prevH = all[(posInAll - 1 + all.length) % all.length];
+  const nextH = all[(posInAll + 1) % all.length];
+  const totVal = sum(all.map(z=>z.val)) || 1;
+  const clsPeers = all.filter(z=>z.Type === x.Type).sort((a,b)=>b.val - a.val);
+  const clsTot = sum(clsPeers.map(z=>z.val)) || 1;
+  const tabSub = document.getElementById('pfInspectorTabSub');
+  if(tabSub) tabSub.textContent = x.label.slice(0, 22);
+
+  // Target scenario calculations (10y, 15y, PJ.years)
+  const horizons = [...new Set([5, 10, 15, PJ.years])].sort((a,b)=>a-b);
+
+  host.innerHTML = `
+   <div class="pfi-top">
+    <div class="pfi-nav">
+     <button type="button" class="btn" data-pf-back="holdings">← Back to Holdings</button>
+     <button type="button" class="btn" data-pf-back="analytics">📊 Performance Page</button>
+    </div>
+    <div class="pfi-nav">
+     <button type="button" class="btn sm" data-pfi-open="${prevH.i}" title="Previous holding">‹ ${esc(prevH.label.slice(0,16))}</button>
+     <select class="btn sm" id="pfiSelect" aria-label="Select holding to inspect">
+      ${all.map(h=>`<option value="${h.i}" ${h.i===x.i?'selected':''}>${esc(h.label)} (${h.Type==='Stock'?'Stock':'MF'})</option>`).join('')}
+     </select>
+     <button type="button" class="btn sm" data-pfi-open="${nextH.i}" title="Next holding">${esc(nextH.label.slice(0,16))} ›</button>
+    </div>
+   </div>
+
+   <div class="pfi-hero">
+    <div class="pfi-title">
+     <div style="display:flex;gap:.45rem;align-items:center;flex-wrap:wrap">
+      <span class="tag">${esc(x.Type)}</span>
+      ${x.Symbol?`<span class="chip ok">ID: ${esc(x.Symbol)}</span>`:''}
+      ${x.Bse?`<span class="chip">BSE: ${esc(x.Bse)}</span>`:''}
+      ${x.SchemeCode?`<span class="chip">AMFI: ${esc(x.SchemeCode)}</span>`:''}
+     </div>
+     <h2>${esc(x.label)}</h2>
+     <div class="mut">Position ${posInAll + 1} of ${all.length} · ${(x.val/totVal*100).toFixed(2)}% of total portfolio · ${(x.val/clsTot*100).toFixed(1)}% of ${x.Type.toLowerCase()}s</div>
+    </div>
+    <div class="pfi-price-box">
+     <small class="mut">CURRENT PRICE / NAV</small>
+     <strong class="hv">${x.price ? px(x.price) : '—'}</strong>
+     <div>
+      ${x.ChangePct!=null?`<span class="price-trend ${x.ChangePct>=0?'up':'down'}">${x.ChangePct>=0?'▲':'▼'} ${Math.abs(x.ChangePct).toFixed(2)}% today</span>`:''}
+      <span class="mut" style="font-size:.72rem">${esc(x.PriceDate || 'Workbook value')}</span>
+     </div>
+    </div>
+   </div>
+
+   <div class="pfi-kpis">
+    <div class="pfi-kpi"><small>Invested Capital</small><b class="hv">${inr(x.inv)}</b></div>
+    <div class="pfi-kpi"><small>Current Value</small><b class="hv">${inr(x.val)}</b></div>
+    <div class="pfi-kpi"><small>Net Profit / Loss</small><b class="hv ${x.pl>=0?'pos':'neg'}">${sm(x.pl)}</b></div>
+    <div class="pfi-kpi"><small>Absolute Return</small><b class="${x.pct>=0?'pos':'neg'}">${sg(x.pct)}</b></div>
+    <div class="pfi-kpi"><small>Units Held</small><b>${x.units.toLocaleString('en-IN',{maximumFractionDigits:3})}</b></div>
+    <div class="pfi-kpi"><small>Avg Buy Cost</small><b class="hv">${px(x.Avg)}</b></div>
+   </div>
+
+   <div class="pfi-grid">
+    <div class="pfi-panel">
+     <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap">
+      <div><h3 style="margin:0">Interactive Price / NAV History Line Graph</h3><div class="mut" style="font-size:.72rem">Historical price trend vs. your average buy cost benchmark</div></div>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center">
+       <div class="seg" id="pfiModeSeg" title="Switch between Unit Price/NAV and Total Holding Value">
+        <button type="button" data-pfi-mode="price" class="${(window._pfiMode||'price')==='price'?'on':''}">Price / NAV</button>
+        <button type="button" data-pfi-mode="val" class="${window._pfiMode==='val'?'on':''}">Holding Value</button>
+       </div>
+       <div class="seg" id="pfiRangeSeg">
+        ${Object.keys(RNG).map(r=>`<button type="button" data-pfi-rng="${r}" class="${r===pfiRange?'on':''}">${r}</button>`).join('')}
+       </div>
+      </div>
+     </div>
+     <div id="pfiChartStats" class="tstats" style="margin-top:.55rem"></div>
+     <div class="pfi-chart-wrap"><canvas id="pfiCanvas"></canvas></div>
+    </div>
+
+    <div style="display:grid;gap:1rem">
+     <div class="pfi-panel">
+      <h3>Compounding Projection (@ ${PJ.rate}% / yr)</h3>
+      <div class="tw">
+       <table class="detailtable">
+        <thead><tr><th>Horizon</th><th class="r">Projected Value</th><th class="r">Expected Gain</th><th class="r">Multiple</th></tr></thead>
+        <tbody>
+         ${horizons.map(yr=>{
+          const fv = x.val * Math.pow(1 + PJ.rate/100, yr);
+          return `<tr><td><b>${yr} Years</b></td><td class="r hv">${inr(fv)}</td><td class="r hv pos">+${inr(fv - x.val)}</td><td class="r">${(x.val?fv/x.val:0).toFixed(2)}×</td></tr>`;
+         }).join('')}
+        </tbody>
+       </table>
+      </div>
+     </div>
+
+     <div class="pfi-panel">
+      <h3>Quick Switch · ${esc(x.Type)} Peers (${clsPeers.length})</h3>
+      <div class="pfi-Peer-list">
+       ${clsPeers.map(p=>`<div class="pfi-peer-item ${p.i===x.i?'on':''}" data-pfi-open="${p.i}">
+        <div><b>${esc(p.label)}</b><div class="mut">${(p.val/totVal*100).toFixed(1)}% weight</div></div>
+        <div style="text-align:right"><b class="hv">${inr(p.val)}</b><div class="${p.pl>=0?'pos':'neg'}" style="font-size:.7rem">${sg(p.pct)}</div></div>
+       </div>`).join('')}
+      </div>
+     </div>
+    </div>
+   </div>
+  `;
+
+  // Draw historical line graph inside Inspector (always renders a line chart)
+  const drawPfiChart = (series)=>{
+   const stEl = document.getElementById('pfiChartStats');
+   const cvEl = document.getElementById('pfiCanvas');
+   if(!cvEl) return;
+   if(charts.pfiMain){ try{charts.pfiMain.destroy();}catch(e){} delete charts.pfiMain; }
+   const activeSeries = (series && series.length >= 2) ? series : synthTrajectory(x);
+   const isSyn = !!activeSeries._synthetic;
+   const valMode = window._pfiMode === 'val';
+   const mult = valMode ? (x.units || 1) : 1;
+   const fmtY = v => valMode ? inr(v) : px(v);
+   const sub = sliceR(activeSeries, pfiRange);
+   const ys = sub.map(p=>+(p[1]*mult).toFixed(2)), first = ys[0], last = ys[ys.length-1], hi = Math.max(...ys), lo = Math.min(...ys), chg = first ? (last/first - 1)*100 : 0, up = chg >= 0;
+   const avgLineVal = +((x.Avg || 0) * mult).toFixed(2);
+   const fd = t=>new Date(t).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'});
+   if(stEl){
+    stEl.innerHTML = `<span>${pfiRange} Change <b class="${up?'pos':'neg'}">${sg(chg)}</b></span><span>Latest <b>${fmtY(last)}</b></span><span>Period High <b>${fmtY(hi)}</b></span><span>Period Low <b>${fmtY(lo)}</b></span><span>${valMode?'Invested Cost':'Avg Buy Cost'} <b>${fmtY(avgLineVal)}</b></span><span>${fd(sub[0][0])} → ${fd(sub[sub.length-1][0])}</span>${isSyn?'<span class="tag" title="Live historical feed not cached yet; showing interpolated price trajectory from cost to current price">Trajectory curve</span>':'<span class="tag">Live historical series</span>'}`;
+   }
+   const col = cv(up?'--up':'--dn') || (up?'#10b981':'#f43f5e');
+   charts.pfiMain = mkChart(cvEl, {
+    _keep: true,
+    type: 'line',
+    data: {
+     labels: sub.map(p=>fd(p[0])),
+     datasets: [
+      { label: valMode ? 'Holding Value (₹)' : (x.Type==='Mutual Fund'?'NAV (₹)':'Stock Price (₹)'), data: ys, borderColor: col, backgroundColor: alphaC(col, .16), fill: true, borderWidth: 2.4, pointRadius: 0, pointHoverRadius: 5, tension: .25 },
+      ...(avgLineVal > 0 ? [{ label: valMode ? 'Invested Capital (₹)' : 'Avg Buy Cost (₹)', data: ys.map(()=>avgLineVal), borderColor: '#f59e0b', borderDash: [6,4], borderWidth: 1.6, pointRadius: 0, fill: false }] : [])
+     ]
+    },
+    options: {
+     responsive: true,
+     maintainAspectRatio: false,
+     interaction: { mode: 'index', intersect: false },
+     plugins: { legend: { display: true, position: 'bottom', labels: { color: cv('--mut'), boxWidth: 10 } }, datalabels: { display: false }, tooltip: { callbacks: { label: c=>' ' + c.dataset.label + ': ' + fmtY(c.parsed.y) } } },
+     scales: { x: { ticks: { color: cv('--mut'), maxTicksLimit: 7, maxRotation: 0 }, grid: { display: false } }, y: { ticks: { color: cv('--mut'), callback: v=>fmtY(v) }, grid: { color: cv('--grid') } } }
+    }
+   });
+  };
+
+  const baseObj = portfolio[x.i] || x;
+  const hk = HK(baseObj);
+  if(HM[hk] && !HM[hk]._synthetic) drawPfiChart(HM[hk]);
+  else {
+   drawPfiChart(HM[hk] || synthTrajectory(x));
+   loadHist(baseObj).then(d=>{ if(curPfPage==='inspector' && curInspectIdx===x.i) drawPfiChart(d); }).catch(()=>{});
+  }
+ };
+
+ // Intercept Holding clicks inside Portfolio view so they transition page-wise into the Inspector instead of opening a modal
+ document.addEventListener('click', e=>{
+  const pfiBtn = e.target.closest('[data-pfi-open]');
+  if(pfiBtn && D){
+   e.stopPropagation();
+   show('market');
+   switchPfPage('inspector', +pfiBtn.dataset.pfiOpen);
+   window.scrollTo({top: 0, behavior: 'smooth'});
+   return;
+  }
+  const backBtn = e.target.closest('[data-pf-back]');
+  if(backBtn){
+   e.stopPropagation();
+   switchPfPage(backBtn.dataset.pfBack);
+   window.scrollTo({top: 0, behavior: 'smooth'});
+   return;
+  }
+  const rngBtn = e.target.closest('[data-pfi-rng]');
+  if(rngBtn){
+   pfiRange = rngBtn.dataset.pfiRng;
+   renderPfInspector(curInspectIdx);
+   return;
+  }
+  const modeBtn = e.target.closest('[data-pfi-mode]');
+  if(modeBtn){
+   window._pfiMode = modeBtn.dataset.pfiMode;
+   renderPfInspector(curInspectIdx);
+   return;
+  }
+  const h = e.target.closest('[data-hold]');
+  if(h && D && cur === 'market' && !e.target.closest('input,.trendcell,.trend-exp,#detailModal')){
+   e.stopPropagation();
+   e.preventDefault();
+   switchPfPage('inspector', +h.dataset.hold);
+   window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+ }, true);
+
+ document.addEventListener('change', e=>{
+  if(e.target && e.target.id === 'pfiSelect'){
+   switchPfPage('inspector', +e.target.value);
+  }
+ });
+
+ // Route openDetail('holding', idx) in Portfolio view directly to Page 4 Holding Deep-Dive Inspector
+ const _origOpenDetailV23 = openDetail;
+ openDetail = function(key, value, trail){
+  if(key === 'holding' && cur === 'market' && (!trail || !trail.length)){
+   switchPfPage('inspector', +value);
+   window.scrollTo({top: 0, behavior: 'smooth'});
+   return;
+  }
+  return _origOpenDetailV23(key, value, trail);
+ };
+
+ // Hook into renderPortfolio & renderPortfolioAnalysis so extras stay synced
+ const _origRP2 = renderPortfolio;
+ renderPortfolio = function(){
+  _origRP2();
+  try{
+   renderPfAnalyticsExtras();
+   if(curPfPage === 'inspector') renderPfInspector(curInspectIdx);
+  }catch(e){}
+ };
+
+ // Enhance renderCards with Quick Card Strip, Split Settlement Banner & Ledger Filtering
+ const _origRenderCards = renderCards;
+ renderCards = function(){
+  _origRenderCards();
+  const cs = ccCards();
+  if(!cs.length) return;
+  const infos = cs.map(ccInfo);
+
+  // 1. Quick Card Selector Pills
+  const qStrip = document.getElementById('ccQuickStrip');
+  if(qStrip){
+   qStrip.innerHTML = cs.map((c, k)=>{
+    const i2 = infos[k];
+    const dotCol = i2.state==='overdue'?'#ef4444':i2.state==='soon'?'#f59e0b':c.due>0?'var(--a1)':'#10b981';
+    return `<button type="button" class="cc-qpill ${k===ccSel?'on':''}" data-cc-quick="${k}" style="--dot:${dotCol}">
+     <i></i><span>${esc(ccLabel(c))}</span><small class="hv">${inr(c.due)}</small>
+    </button>`;
+   }).join('');
+  }
+
+  // 2. Split Settlement Summary Banner (My Share vs Other's Share)
+  const splitEl = document.getElementById('ccSplitBanner');
+  if(splitEl){
+   const myToPay = sum(cs.map(c=>c.toPay||0));
+   const myPaid = sum(cs.map(c=>c.paid||0));
+   const myPend = sum(cs.map(c=>c.pending||0));
+   const othPay = sum(cs.map(c=>c.otherPay||0));
+   const othPaid = sum(cs.map(c=>c.otherPaid||0));
+   const othPend = sum(cs.map(c=>c.otherPending||0));
+   splitEl.innerHTML = `
+    <div class="cc-split-box"><small>My Share To Pay</small><b class="hv">${inr(myToPay)}</b><span>Total Paid: <b class="hv pos">${inr(myPaid)}</b></span></div>
+    <div class="cc-split-box"><small>Net Pending Settlement</small><b class="hv ${myPend>0?'neg':'pos'}">${inr(myPend)}</b><span>Across ${cs.filter(c=>(c.pending||0)>0).length} card(s)</span></div>
+    <div class="cc-split-box"><small>Other's Share</small><b class="hv">${inr(othPay)}</b><span>Paid by Other: <b class="hv">${inr(othPaid)}</b></span></div>
+    <div class="cc-split-box"><small>Pending From Other</small><b class="hv ${othPend>0?'neg':'pos'}">${inr(othPend)}</b><span>Reimbursement tracker</span></div>
+   `;
+  }
+
+  applyCcLedgerFilter();
+ };
+
+ const _origCcSelect = ccSelect;
+ ccSelect = function(i, scroll){
+  _origCcSelect(i, scroll);
+  $$('#ccQuickStrip .cc-qpill').forEach((b, k)=>b.classList.toggle('on', k === ccSel));
+ };
+
+ document.addEventListener('click', e=>{
+  const qp = e.target.closest('[data-cc-quick]');
+  if(qp){
+   ccSelect(+qp.dataset.ccQuick, true);
+   return;
+  }
+  const fBtn = e.target.closest('#ccLedgerFilter [data-ccf]');
+  if(fBtn){
+   ccFilterMode = fBtn.dataset.ccf;
+   $$('#ccLedgerFilter button').forEach(b=>b.classList.toggle('on', b === fBtn));
+   applyCcLedgerFilter();
+  }
+ });
+
+ function applyCcLedgerFilter(){
+  const cs = ccCards();
+  const matchCard = (c)=>{
+   const u = c.limit ? ((c.consumed ?? c.due) / c.limit) * 100 : 0;
+   if(ccFilterMode === 'due') return (c.due || 0) > 0;
+   if(ccFilterMode === 'pending') return (c.pending || 0) > 0 || (c.otherPending || 0) > 0 || c.pendingError;
+   if(ccFilterMode === 'highutil') return u >= 30;
+   return true;
+  };
+  $$('#ccRows tr[data-i]').forEach(tr=>{
+   const c = cs[+tr.dataset.i];
+   tr.style.display = (!c || matchCard(c)) ? '' : 'none';
+  });
+  $$('#ccMobileRows .cc-mobile-card[data-i]').forEach(card=>{
+   const c = cs[+card.dataset.i];
+   card.style.display = (!c || matchCard(c)) ? '' : 'none';
+  });
+ }
+
+ // Mobile Quick Tools Bottom Sheet
+ const mtBtn = document.getElementById('mobileToolsBtn');
+ const mtSheet = document.getElementById('mobileToolsSheet');
+ const closeMt = ()=>mtSheet && mtSheet.classList.remove('open');
+ if(mtBtn && mtSheet){
+  mtBtn.onclick = ()=>{
+   const st = document.getElementById('mtoolsFileStatus');
+   const f = document.getElementById('file');
+   if(st && f) st.textContent = f.textContent;
+   mtSheet.classList.add('open');
+  };
+  document.getElementById('mtoolsClose').onclick = closeMt;
+  mtSheet.addEventListener('click', e=>{ if(e.target === mtSheet) closeMt(); });
+  document.getElementById('mtOpenWb').onclick = ()=>{ closeMt(); document.getElementById('open').click(); };
+  document.getElementById('mtRefreshWb').onclick = ()=>{ closeMt(); document.getElementById('refresh').click(); };
+  document.getElementById('mtRefreshPx').onclick = ()=>{ closeMt(); show('market'); document.getElementById('priceRefresh').click(); };
+  document.getElementById('mtThemeStudio').onclick = ()=>{ closeMt(); studioToggle(true); };
+  document.getElementById('mtPrivacy').onclick = ()=>{ closeMt(); document.getElementById('visibility').click(); };
+  document.getElementById('mtBackupCal').onclick = ()=>{ closeMt(); document.getElementById('calExportBackup').click(); };
+  $$('#mtStatusSeg button').forEach(b=>b.onclick = ()=>{
+   $$('#mtStatusSeg button').forEach(x=>x.classList.toggle('on', x === b));
+   const targetSt = b.dataset.st;
+   const mainBtn = $$('#seg button').find(x=>x.textContent.trim() === targetSt);
+   if(mainBtn) mainBtn.click();
+   closeMt();
+  });
+ }
+})();
+</script>
+
+
+<script>
+/* ===== v2.4 Calendar Task Checkboxes + Redesigned Pie/Donut Chart Engine ===== */
+(function(){
+ // 1. Custom Center-Hub & Exploded-Slice Plugin for all Pie / Doughnut charts
+ const modernPiePlugin = {
+  id: 'modernPieDesign',
+  beforeDraw(chart){
+   if(chart.config.type !== 'doughnut' && chart.config.type !== 'pie') return;
+   const area = chart.chartArea;
+   if(!area) return;
+   const meta = chart.getDatasetMeta(0);
+   if(!meta || !meta.data || !meta.data.length) return;
+   const firstArc = meta.data[0];
+   const cx = firstArc.x, cy = firstArc.y, ir = firstArc.innerRadius || 0, or = firstArc.outerRadius || 0;
+   if(ir <= 18) return;
+   const ctx = chart.ctx;
+   ctx.save();
+
+   // Subtle inner decorative dashed track ring
+   ctx.beginPath();
+   ctx.arc(cx, cy, Math.max(8, ir - 6), 0, Math.PI * 2);
+   ctx.strokeStyle = cv('--b') || 'rgba(148,163,184,0.22)';
+   ctx.lineWidth = 1.25;
+   ctx.setLineDash([3, 3]);
+   ctx.stroke();
+   ctx.setLineDash([]);
+
+   // Soft radial inner hub fill
+   const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, ir - 7);
+   grad.addColorStop(0, isLight() ? 'rgba(15,118,110,0.08)' : 'rgba(94,234,212,0.09)');
+   grad.addColorStop(1, 'transparent');
+   ctx.fillStyle = grad;
+   ctx.beginPath();
+   ctx.arc(cx, cy, Math.max(6, ir - 7), 0, Math.PI * 2);
+   ctx.fill();
+
+   // Calculate total or hovered slice for center readout
+   const ds = chart.data.datasets[0];
+   const rawVals = (ds && ds.data) ? ds.data.map(v=>Math.abs(Number(v)||0)) : [];
+   const total = rawVals.reduce((a,b)=>a+b, 0);
+   const active = chart.getActiveElements && chart.getActiveElements();
+   let topLabel = 'TOTAL', mainVal = '', subVal = '';
+   const isLakh = chart.canvas && chart.canvas.id === 'c1';
+
+   if(active && active.length){
+    const idx = active[0].index;
+    const v = rawVals[idx] || 0;
+    const pct = total ? Math.round(v / total * 100) : 0;
+    topLabel = String(chart.data.labels[idx] || '').slice(0, 14).toUpperCase();
+    mainVal = pct + '%';
+    subVal = inr(isLakh ? v * 1e5 : v);
+   } else {
+    mainVal = inr(isLakh ? total * 1e5 : total);
+    subVal = rawVals.filter(v=>v>0).length + ' segments';
+   }
+
+   if(document.body.classList.contains('hide-values')){
+    mainVal = '****';
+    subVal = 'hidden';
+   }
+
+   ctx.textAlign = 'center';
+   ctx.textBaseline = 'middle';
+   const inkCol = cv('--ink') || '#eef2f8';
+   const mutCol = cv('--mut') || '#8b9ab0';
+   const fSize = Math.max(11, Math.min(16, Math.round(ir * 0.34)));
+
+   ctx.fillStyle = mutCol;
+   ctx.font = '700 ' + Math.max(8, Math.round(fSize * 0.56)) + 'px Sora, system-ui, sans-serif';
+   ctx.fillText(topLabel, cx, cy - fSize * 0.85);
+
+   ctx.fillStyle = inkCol;
+   ctx.font = '800 ' + fSize + 'px Sora, system-ui, sans-serif';
+   ctx.fillText(mainVal, cx, cy + 1);
+
+   ctx.fillStyle = mutCol;
+   ctx.font = '600 ' + Math.max(8, Math.round(fSize * 0.60)) + 'px system-ui, sans-serif';
+   ctx.fillText(subVal, cx, cy + fSize * 0.88);
+
+   ctx.restore();
+  }
+ };
+ try{ Chart.register(modernPiePlugin); }catch(e){}
+
+ // Wrap studioStyle so every doughnut/pie chart gets rounded exploded arcs, hover expansion, and clean pill badges
+ const _origStudioStyle = window.studioStyle;
+ window.studioStyle = function(el, cfg){
+  cfg = _origStudioStyle ? _origStudioStyle(el, cfg) : cfg;
+  try{
+   const t = cfg.type;
+   if(t === 'doughnut' || t === 'pie'){
+    cfg.options = cfg.options || {};
+    cfg.options.cutout = '68%';
+    cfg.options.layout = Object.assign({padding: 10}, cfg.options.layout || {});
+    const surfCol = cv('--surf') || (isLight() ? '#ffffff' : '#0d1524');
+    (cfg.data.datasets || []).forEach(d=>{
+     d.borderRadius = 10;
+     d.spacing = 5;
+     d.borderWidth = 2;
+     d.borderColor = surfCol;
+     d.hoverOffset = 12;
+     d.hoverBorderWidth = 2;
+    });
+    cfg.options.plugins = cfg.options.plugins || {};
+    cfg.options.plugins.legend = Object.assign({}, cfg.options.plugins.legend || {}, {
+     position: 'right',
+     labels: {
+      color: cv('--ink') || '#eef2f8',
+      usePointStyle: true,
+      pointStyle: 'rectRounded',
+      boxWidth: 11,
+      padding: 13,
+      font: { size: 11.5, weight: '600' }
+     }
+    });
+    cfg.options.plugins.datalabels = {
+     color: '#ffffff',
+     backgroundColor: ctx => {
+      const ds = ctx.dataset.data || [];
+      const s = ds.reduce((a,b)=>a+(+b||0), 0);
+      const v = +ds[ctx.dataIndex] || 0;
+      return (s && v/s >= 0.06) ? 'rgba(7, 11, 20, 0.72)' : null;
+     },
+     borderColor: 'rgba(255,255,255,0.22)',
+     borderWidth: 1,
+     borderRadius: 99,
+     padding: { top: 2, bottom: 2, left: 6, right: 6 },
+     font: { weight: '800', size: 10 },
+     formatter: (v, ctx) => {
+      const ds = ctx.dataset.data || [];
+      const s = ds.reduce((a,b)=>a+(+b||0), 0);
+      return (s && v/s >= 0.06) ? Math.round(v/s * 100) + '%' : '';
+     }
+    };
+   }
+  }catch(e){}
+  return cfg;
+ };
+
+ // Re-render charts on load so the new pie chart design takes effect immediately
+ setTimeout(()=>{
+  if(D){ try{ show(cur, true); }catch(e){} }
+ }, 80);
+
+ // 2. Calendar Checkbox Task Handler (works in both "Tasks on selected day" & the monthly checklist table)
+ function toggleCalendarTask(item, plannedAmt, checked){
+  if(!item) return;
+  const y = calM.getFullYear(), m = calM.getMonth();
+  const key = calDoneKey(y, m, item);
+  const prev = calAdded(y, m, item, plannedAmt);
+  const next = checked ? plannedAmt : 0;
+  if(checked) calCheckMet(item, prev, next);
+  if(next > 0) CALAMT[key] = next;
+  else delete CALAMT[key];
+  saveCalendarState();
+  renderCal();
+  if(cur === 'ov') show('ov', true);
+ }
+
+ document.addEventListener('change', e=>{
+  const cb = e.target.closest('.cal-day-cb');
+  if(!cb) return;
+  e.stopPropagation();
+  toggleCalendarTask(cb.dataset.item, Number(cb.dataset.amt) || 0, cb.checked);
+ });
+
+ document.addEventListener('click', e=>{
+  // Clicking the task title in "Tasks on selected day" also toggles its checkbox
+  const info = e.target.closest('.cal-task-info[data-cal-lbl]');
+  if(info){
+   const row = info.closest('.cal-chk-row');
+   const cb = row && row.querySelector('.cal-day-cb');
+   if(cb){
+    cb.checked = !cb.checked;
+    toggleCalendarTask(cb.dataset.item, Number(cb.dataset.amt) || 0, cb.checked);
+   }
+   return;
+  }
+  // "Mark all done / Undo all" button in selected day header
+  const markAllBtn = e.target.closest('#calSelMarkAll');
+  if(markAllBtn){
+   const cbs = $$('#calSel .cal-day-cb');
+   if(!cbs.length) return;
+   const anyUnchecked = cbs.some(c=>!c.checked);
+   const y = calM.getFullYear(), m = calM.getMonth();
+   cbs.forEach(c=>{
+    const item = c.dataset.item, amt = Number(c.dataset.amt) || 0, key = calDoneKey(y, m, item);
+    const prev = calAdded(y, m, item, amt);
+    if(anyUnchecked){
+     calCheckMet(item, prev, amt);
+     if(amt > 0) CALAMT[key] = amt;
+    } else {
+     delete CALAMT[key];
+    }
+   });
+   saveCalendarState();
+   renderCal();
+   if(cur === 'ov') show('ov', true);
+   return;
+  }
+  // Clicking a card in "Remaining this month" jumps to that day in the current month
+  const jump = e.target.closest('#calUp li[data-cal-jump]');
+  if(jump){
+   calSel = +jump.dataset.calJump;
+   renderCal();
+  }
+ });
+})();
+</script>
+
+</body></html>
