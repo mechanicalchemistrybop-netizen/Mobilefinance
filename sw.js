@@ -1,5 +1,5 @@
 /* Money dashboard service worker. Bump VERSION whenever you replace files in /libs or /icons. */
-const VERSION='v1.4';
+const VERSION='v2.1';
 const CACHE='money-'+VERSION;
 const SHELL=['./','index.html','manifest.webmanifest','icons/icon-192.png','icons/icon-512.png','icons/apple-touch-icon.png','libs/xlsx.full.min.js','libs/chart.umd.js','libs/chartjs-plugin-datalabels.min.js'];
 const CDN='cdn.jsdelivr.net';
